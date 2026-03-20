@@ -23,12 +23,9 @@ public class UiHandler
 {
 	private final int GRÜN, GRAU;
 
-	private boolean sprinting;
-
 	private MainActivity mainActivity;
 
 	private Button connectButton;
-	private Button sprintButton;
 	private TextView joystickInfo;
 	private TextView verbindungsstatus;
 
@@ -52,10 +49,6 @@ public class UiHandler
 		verbindungsstatus = mainActivity.findViewById(R.id.verbindungsstatus);
 		verbindungsstatus.setText(R.string.nicht_verbunden);
 		verbindungsstatus.setTextColor(GRAU);
-
-		sprintButton = mainActivity.findViewById(R.id.enable_sprint);
-		sprintButton.setOnTouchListener(this::handleSprint);
-		sprinting = false;
 	}
 
 
@@ -82,14 +75,6 @@ public class UiHandler
 		joystickInfo.setText(info);
 	}
 
-	public float checkSprinting(float fahrgeschwindigkeit)
-	{
-		if (sprinting)
-			return 1001;
-
-		return fahrgeschwindigkeit;
-	}
-
 	private void onDisconnect_ButtonUpdate()
 	{
 		connectButton.setText(R.string.verbinden);
@@ -112,26 +97,5 @@ public class UiHandler
 	{
 		verbindungsstatus.setText(R.string.verbunden);
 		verbindungsstatus.setTextColor(GRÜN);
-	}
-
-	private boolean handleSprint(View view, MotionEvent event)
-	{
-		switch (event.getAction())
-		{
-			case MotionEvent.ACTION_DOWN:
-			{
-				sprinting = true;
-				return true;
-			}
-			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_CANCEL:
-			{
-				sprinting = false;
-				return true;
-			}
-		}
-
-
-		return false;
 	}
 }

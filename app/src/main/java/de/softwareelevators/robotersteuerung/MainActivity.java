@@ -61,9 +61,6 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 
 		uiHandler.updateJoystickInfo(lenkwinkel, fahrgeschwindigkeit);
 
-		/* Setze fahrgeschwindigkeit auf 1001 wenn die Sprint Taste gedrückt ist */
-		fahrgeschwindigkeit = uiHandler.checkSprinting(fahrgeschwindigkeit);
-
 		/* Die neuen Daten in den Sendebegrenzer aktualisieren. Er sendet sie dann, sobald er
 		Zeit dafür hat. Wenn die bereits dort existierenden Daten äquivalten zu den neuen Daten
 		sind wird nicht gesenet. */
