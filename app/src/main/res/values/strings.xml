@@ -1,0 +1,10 @@
+<resources>
+	<string name="app_name">Robotersteuerung</string>
+
+	<string name="nicht_verbunden"> Verbindung offen </string>
+	<string name="verbunden"> Verbunden </string>
+
+	<string name="verbinden"> Connect </string>
+	<string name="verbindung_trennen"> Disconnect </string>
+
+</resources>
