@@ -62,18 +62,5 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.035"
 			app:layout_constraintVertical_bias="0.045"/>
-	<Button
-			android:text="Sprint"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/enable_sprint"
-			tools:layout_editor_absoluteY="194dp"
-			tools:layout_editor_absoluteX="15dp"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintHorizontal_bias="0.11"
-			app:layout_constraintVertical_bias="0.70"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
