@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
+import de.softwareelevators.robotersteuerung.networkController.BluetoothController;
 import de.softwareelevators.robotersteuerung.util.ActivityLauncher;
 import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 import de.softwareelevators.robotersteuerung.util.UiHandler;
@@ -23,6 +24,51 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		Ich will auf WLan umsteigen (Doppelte Reichweite). Der ESP32 Sketch
+		dafür ist fertig. Es muss nur noch ein WLan Kontroller in dieser App
+		gebaut werden, so dass diese APP auch WLan Daten an den ESP32 senden
+		kann.
+
+				das hier wär wohl irgendwie der code:
+
+//		new Thread(() -> {
+//			try {
+//				// Verbindung zum ESP32 herstellen
+//				Socket socket = new Socket("192.168.4.1", 1234);		// Hierfür muss das Handy bereits im WLan des EPS32 sein
+//
+//				// Streams holen
+//				OutputStream out = socket.getOutputStream();
+//				InputStream in = socket.getInputStream();
+//
+//				// Beispiel: Ein Byte senden
+//				out.write(42); // z.B. Steuerbefehl
+//
+//				// Beispiel: Antwort lesen
+//				int received = in.read();
+//				System.out.println("ESP32 sendet: " + received);
+//
+//				// Verbindung offen lassen oder später schließen
+//				// socket.close();
+//
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}).start();
+
+
+
+		ja sind wirklich nur 50 zeilen....
+
+		/*
+			Bei diesem Projekt handelt es sich um ein Git Projekt, in welchem
+			unterschiedliche Features auf unterschiedlichen Branches implementiert
+			werden. Aktuell existiert der main Branch - genannt Master - und ein
+			Branch, auf dem das Sprinting Feature wieder entfernt wurde. Mit
+			git checkout kann zwischen beiden Branches gewechselt werden. Mit
+			git branch kann der aktuell ausgewählte Branch angezeigt werden.
+		 */
+
+
 		super.onCreate(savedInstanceState);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

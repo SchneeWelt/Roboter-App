@@ -1,4 +1,4 @@
-package de.softwareelevators.robotersteuerung;
+package de.softwareelevators.robotersteuerung.networkController;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,10 +8,10 @@ import android.content.pm.PackageManager;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.core.app.ActivityCompat;
+import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
 import de.softwareelevators.robotersteuerung.util.BtPermissionChecker;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
@@ -20,7 +20,7 @@ import java.util.UUID;
 /** Erlaubt das Herstellen von Verbindungen zu anderen Geräten
  * über klassisches Bluetooth (nicht BLE)
  */
-public class BluetoothController
+public class BluetoothController extends NetworkController
 {
 	/**
 	* Der name von dem BT Classic Gerät, mit dem sich dises
