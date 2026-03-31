@@ -18,8 +18,10 @@ import java.util.UUID;
 
 
 /** Erlaubt das Herstellen von Verbindungen zu anderen Geräten
- * über klassisches Bluetooth (nicht BLE)
- */
+ * über klassisches Bluetooth (nicht BLE). Anschließend ist die
+ * Datenübertragung zu diesem Gerät möglich. Jeweils eine Verbindung pro COntroller Instanz.
+ *  * Anschließend ist die Datenübertragung zu dem verbundenen Gerät
+ *  * möglich. */
 public class BluetoothController extends NetworkController
 {
 	/**
@@ -53,15 +55,15 @@ public class BluetoothController extends NetworkController
 
 	private MainActivity mainActivity;
 
-	private ConnectionNotifier connectionNotifier;
+	private ConnectionStateNotifier connectionStateNotifier;
 	private DataReceivedConnection dataReceivedConnection;
 
 
-	public BluetoothController(String deviceName, DataReceivedConnection dataReceivedConnection, ConnectionNotifier connectionNotifier, MainActivity mainActivity)
+	public BluetoothController(String deviceName, DataReceivedConnection dataReceivedConnection, ConnectionStateNotifier connectionStateNotifier, MainActivity mainActivity)
 	{
 		this.deviceName = deviceName;
 		this.mainActivity = mainActivity;
-		this.connectionNotifier = connectionNotifier;
+		this.connectionStateNotifier = connectionStateNotifier;
 		this.dataReceivedConnection = dataReceivedConnection;
 	}
 
@@ -218,7 +220,7 @@ public class BluetoothController extends NetworkController
 
 					mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
 
-					connectionNotifier.onConnect(connectedDevice);
+					connectionStateNotifier.onConnect(connectedDevice);
 				} catch (Exception e)
 				{
 					Ausgabe.print("Verbindungsaufbau fehlgeschlagen: " + e.getMessage());
@@ -237,7 +239,7 @@ public class BluetoothController extends NetworkController
 		{
 			bluetoothSocket.close();
 
-			connectionNotifier.onDisconnect();
+			connectionStateNotifier.onDisconnect();
 
 			mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung getrennt", Toast.LENGTH_SHORT).show());
 		} catch (Exception e)
@@ -276,22 +278,5 @@ public class BluetoothController extends NetworkController
 	public boolean isConnected()
 	{
 		return bluetoothSocket != null && bluetoothSocket.isConnected();
-	}
-
-	public interface DataReceivedConnection
-	{
-		void onDataReceived(String data);
-	}
-
-	public interface ConnectionNotifier
-	{
-		/** Wird geworfen, wenn eine Verbindung zu einem BT Gerät
-		 * hergestellt wurde.
-		 *
-		 * @param connectedDevice
-		 */
-		void onConnect(BluetoothDevice connectedDevice);
-
-		void onDisconnect();
 	}
 }

@@ -7,11 +7,12 @@ import android.view.View;
 import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
 import de.softwareelevators.robotersteuerung.networkController.BluetoothController;
+import de.softwareelevators.robotersteuerung.networkController.WLanController;
 import de.softwareelevators.robotersteuerung.util.ActivityLauncher;
 import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 import de.softwareelevators.robotersteuerung.util.UiHandler;
 
-public class MainActivity extends AppCompatActivity implements Joystick.JoystickListener, BluetoothController.DataReceivedConnection, BluetoothController.ConnectionNotifier
+public class MainActivity extends AppCompatActivity implements Joystick.JoystickListener, BluetoothController.DataReceivedConnection, BluetoothController.ConnectionStateNotifier, VertikalerRegler.VertikalerReglerListener
 {
 	/* Ermöglicht das starten anderer Anwendungen - genannt Intents - durch diese Anwendung. Damit ist
 	* es beispielsweise möglich, den Nutzer um das Einschalten von Bluetooth zu bitten. */
@@ -19,46 +20,19 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 
 	private UiHandler uiHandler;
 	private Sendebegrenzer sendebegrenzer;
+	private WLanController wLanController;
 	private BluetoothController bluetoothController;
+
+
+
+	private float fahrgeschwindigkeit;
+	private float lenkwinkel;
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		Ich will auf WLan umsteigen (Doppelte Reichweite). Der ESP32 Sketch
-		dafür ist fertig. Es muss nur noch ein WLan Kontroller in dieser App
-		gebaut werden, so dass diese APP auch WLan Daten an den ESP32 senden
-		kann.
-
-				das hier wär wohl irgendwie der code:
-
-//		new Thread(() -> {
-//			try {
-//				// Verbindung zum ESP32 herstellen
-//				Socket socket = new Socket("192.168.4.1", 1234);		// Hierfür muss das Handy bereits im WLan des EPS32 sein
-//
-//				// Streams holen
-//				OutputStream out = socket.getOutputStream();
-//				InputStream in = socket.getInputStream();
-//
-//				// Beispiel: Ein Byte senden
-//				out.write(42); // z.B. Steuerbefehl
-//
-//				// Beispiel: Antwort lesen
-//				int received = in.read();
-//				System.out.println("ESP32 sendet: " + received);
-//
-//				// Verbindung offen lassen oder später schließen
-//				// socket.close();
-//
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}).start();
-
-
-
-		ja sind wirklich nur 50 zeilen....
-
 		/*
 			Bei diesem Projekt handelt es sich um ein Git Projekt, in welchem
 			unterschiedliche Features auf unterschiedlichen Branches implementiert
@@ -90,10 +64,20 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 
 		uiHandler = new UiHandler(this);
 
+		wLanController = new WLanController();
 		bluetoothController = new BluetoothController("ESP32", this,this, this);
 
 		sendebegrenzer = new Sendebegrenzer(bluetoothController);
 		sendebegrenzer.start();
+	}
+
+	@Override
+	public void onVertikalerReglerMoved(float auslenkungProzent)
+	{
+		/* Wertebereich: [0; 100] */
+		fahrgeschwindigkeit = auslenkungProzent * 100;
+
+		uiHandler.updateSteeringInfo(lenkwinkel, fahrgeschwindigkeit);
 	}
 
 	@Override
@@ -103,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 		float lenkwinkel = lenkwinkelBerechnen(xPercent, yPercent);
 
 		/* Wertebereich: [0; 100] */
-		float fahrgeschwindigkeit = fahrgeschwindigkeitBerechnen(xPercent, yPercent);
+//		float fahrgeschwindigkeit = fahrgeschwindigkeitBerechnen(xPercent, yPercent);
 
-		uiHandler.updateJoystickInfo(lenkwinkel, fahrgeschwindigkeit);
+		uiHandler.updateSteeringInfo(lenkwinkel, fahrgeschwindigkeit);
 
 		/* Die neuen Daten in den Sendebegrenzer aktualisieren. Er sendet sie dann, sobald er
 		Zeit dafür hat. Wenn die bereits dort existierenden Daten äquivalten zu den neuen Daten
@@ -157,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 		);
 	}
 
+
+	@Deprecated
 	private float fahrgeschwindigkeitBerechnen(float xPercent, float yPercent)
 	{
 		float fahrgeschwindigkeit = (float) Math.sqrt(xPercent * xPercent + yPercent * yPercent) * 100;
@@ -173,7 +159,9 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 	{
 		float lenkwinkel = (float) Math.toDegrees(Math.atan2(yPercent, xPercent));
 
-		/* Koordinatensystem drehen: oben: 0°, 90°: rechts, 180°: unten, -90°:links */
+		/* Koordinatensystem drehen: oben: 0°, 90°: rechts, 180°: unten, -90°:links.
+		* Das ist richtig so und sorgt dafür, dass geradeausfahren gleichbedeutend
+		* zu Joystick nach oben bewegen ist. */
 		lenkwinkel += 90;
 
 		/* Verschobenes Koordinatensystem jetzt noch normalisieren, damit die Werte innerhalb

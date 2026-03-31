@@ -1,15 +1,13 @@
 package de.softwareelevators.robotersteuerung.util;
 
 
-import android.graphics.Color;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import de.softwareelevators.robotersteuerung.Joystick;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
+import de.softwareelevators.robotersteuerung.VertikalerRegler;
 
 /**
  * Kümmert sich um die UI Elemente. Also Aktualiserungen
@@ -40,7 +38,10 @@ public class UiHandler
 		Joystick joystick = mainActivity.findViewById(R.id.joystick);
 		joystick.setJoystickListener(mainActivity);
 
-		joystickInfo = mainActivity.findViewById(R.id.joystick_info);
+		VertikalerRegler vertikalerRegler = mainActivity.findViewById(R.id.vertikaler_regler);
+		vertikalerRegler.setVertikalerReglerListener(mainActivity);
+
+		joystickInfo = mainActivity.findViewById(R.id.controll_info);
 		joystickInfo.setText("...");
 
 		connectButton = mainActivity.findViewById(R.id.connect_button);
@@ -69,7 +70,7 @@ public class UiHandler
 		mainActivity.runOnUiThread(this::onDisconnect_StatusUpdate);
 	}
 
-	public void updateJoystickInfo(float lenkwinkel, float fahrgeschwindigkeit)
+	public void updateSteeringInfo(float lenkwinkel, float fahrgeschwindigkeit)
 	{
 		String info = String.format("Fahrgeschwindigkeit: %.2f%%\nLenkwinkel: %.2f°", fahrgeschwindigkeit, lenkwinkel);
 		joystickInfo.setText(info);
