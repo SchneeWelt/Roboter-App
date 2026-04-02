@@ -20,7 +20,7 @@ import de.softwareelevators.robotersteuerung.networkController.NetworkController
  */
 public class Sendebegrenzer
 {
-	/** Die Daten, die beim einem Sendevorgang gesendet werden
+	/** Die Daten, die bei einem Sendevorgang gesendet werden
 	 * sollen. */
 	private float lenkwinkel, fahrgeschwindigkeit;
 
@@ -40,6 +40,11 @@ public class Sendebegrenzer
 		handler = new Handler(Looper.getMainLooper());
 	}
 
+
+	/**
+	 * Startet den Sendevorgang und wiederhohlt ihn dann im gesetzten
+	 * Intervall regelmäßig.
+	 */
 	public void start()
 	{
 		/* Methodenreferenz nutzen. Wichtig: Parameterliste der verwendeten Methode
@@ -49,34 +54,30 @@ public class Sendebegrenzer
 		handler.post(this::sendTask);
 	}
 
+	/** Beendet den wiederkehrenden Sendevorgang */
 	public void stop()
 	{
 		handler.removeCallbacks(this::sendTask);
 	}
 
-
-	/**
-	 * Hier werden die Daten an diese Klasse übergeben, die von dieser
-	 * Klasse via BT an den Roboter gesendet werden sollen. Die hier
-	 * übergebenen Daten werden beim nächsten Sendeversuch gesendet.
-	 * Ein Buffering der Daten findet nicht statt, heißt jedes neue
-	 * Datum überschreibt seinen entsprechenden Vorgänger.
-	 *
-	 * @param lenkwinkel
-	 * @param fahrgeschwindigkeit
-	 */
-	public void datenAktualisieren(float lenkwinkel, float fahrgeschwindigkeit)
+	public void lenkwinkelAktualisieren(float lenkwinkel)
 	{
 		this.lenkwinkel = lenkwinkel;
+	}
+
+	public void fahrgeschwindigkeitAktualisieren(float fahrgeschwindigkeit)
+	{
 		this.fahrgeschwindigkeit = fahrgeschwindigkeit;
 	}
 
+	/** Hier wird definiert, wie die Daten an den Roboter gesendet werden sollen */
 	private void sendTask()
 	{
-		/* Nur bei Wertänderung senden -> Spamvermeidung */
+		/* Wertänderung seit letzem Send ermitteln */
 		boolean lenkwinkelÄnderung = lenkwinkel != vorheriegerLenkwinkel;
 		boolean fahrgeschwindigkeitsÄnderung = fahrgeschwindigkeit != vorheriegeFahrgeschwindigkeit;
 
+		/* Nur bei Wertänderung senden -> Spamvermeidung */
 		if (lenkwinkelÄnderung || fahrgeschwindigkeitsÄnderung)
 		{
 			btSender.steuerdatenSenden(lenkwinkel, fahrgeschwindigkeit);

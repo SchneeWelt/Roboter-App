@@ -55,16 +55,16 @@ public class BluetoothController extends NetworkController
 
 	private MainActivity mainActivity;
 
-	private ConnectionStateNotifier connectionStateNotifier;
-	private DataReceivedConnection dataReceivedConnection;
+	private NetworConnectionStateListener networConnectionStateListener;
+	private DataReceivedListener dataReceivedListener;
 
 
-	public BluetoothController(String deviceName, DataReceivedConnection dataReceivedConnection, ConnectionStateNotifier connectionStateNotifier, MainActivity mainActivity)
+	public BluetoothController(String deviceName, DataReceivedListener dataReceivedListener, NetworConnectionStateListener networConnectionStateListener, MainActivity mainActivity)
 	{
 		this.deviceName = deviceName;
 		this.mainActivity = mainActivity;
-		this.connectionStateNotifier = connectionStateNotifier;
-		this.dataReceivedConnection = dataReceivedConnection;
+		this.networConnectionStateListener = networConnectionStateListener;
+		this.dataReceivedListener = dataReceivedListener;
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class BluetoothController extends NetworkController
 
 					mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
 
-					connectionStateNotifier.onConnect(connectedDevice);
+					networConnectionStateListener.onConnect(connectedDevice);
 				} catch (Exception e)
 				{
 					Ausgabe.print("Verbindungsaufbau fehlgeschlagen: " + e.getMessage());
@@ -239,7 +239,7 @@ public class BluetoothController extends NetworkController
 		{
 			bluetoothSocket.close();
 
-			connectionStateNotifier.onDisconnect();
+			networConnectionStateListener.onDisconnect();
 
 			mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung getrennt", Toast.LENGTH_SHORT).show());
 		} catch (Exception e)

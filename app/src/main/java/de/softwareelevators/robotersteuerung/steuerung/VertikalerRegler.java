@@ -10,9 +10,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class VertikalerRegler extends View
+public class VertikalerRegler extends View	// aka Slider
 {
-	private VertikalerReglerListener vertikalerReglerListener;
+	private SliderListener sliderListener;
 
 
 	private Paint basePaint, cursorPaint;
@@ -91,10 +91,10 @@ public class VertikalerRegler extends View
 		if (event.getAction() == MotionEvent.ACTION_UP)
 			cursorY = restingPosition;
 
-		float a = limitPosition;
-		float b = restingPosition;
+		float b = limitPosition;
+		float a = restingPosition;
 		float x = cursorY;
-		vertikalerReglerListener.onReglerMoved((x - a) / (b - a));
+		sliderListener.onSliderMoved((x - a) / (b - a));
 
 		invalidate();
 
@@ -115,13 +115,18 @@ public class VertikalerRegler extends View
 		cursorPaint.setColor(basePaintColor);
 	}
 
-	public void setVertikalerReglerListener(VertikalerReglerListener vertikalerReglerListener)
+	public void setSliderListener(SliderListener sliderListener)
 	{
-		this.vertikalerReglerListener = vertikalerReglerListener;
+		this.sliderListener = sliderListener;
 	}
 
-	public interface VertikalerReglerListener
+	public interface SliderListener
 	{
-		void onReglerMoved(float auslenkungProzent);
+		/**
+		 *
+		 * @param sliderPositionPercent Die neue Position des Reglers in
+		 *                              Prozent.
+		 */
+		void onSliderMoved(float sliderPositionPercent);
 	}
 }

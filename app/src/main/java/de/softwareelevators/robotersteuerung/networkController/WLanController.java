@@ -7,7 +7,19 @@ package de.softwareelevators.robotersteuerung.networkController;
  * möglich. */
 public class WLanController extends NetworkController
 {
-//	Ich will auf WLan umsteigen (Doppelte Reichweite). Der ESP32 Sketch
+	@Override
+	public void connect()
+	{
+
+	}
+
+	@Override
+	public void disconnect()
+	{
+
+	}
+
+	//	Ich will auf WLan umsteigen (Doppelte Reichweite). Der ESP32 Sketch
 //	dafür ist fertig. Es muss nur noch ein WLan Kontroller in dieser App
 //	gebaut werden, so dass diese APP auch WLan Daten an den ESP32 senden
 //	kann.
