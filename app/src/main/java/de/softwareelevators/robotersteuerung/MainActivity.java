@@ -8,26 +8,23 @@ import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
 import de.softwareelevators.robotersteuerung.networkController.BluetoothController;
 import de.softwareelevators.robotersteuerung.networkController.WLanController;
+import de.softwareelevators.robotersteuerung.steuerung.Joystick;
+import de.softwareelevators.robotersteuerung.steuerung.Steuereinheit;
+import de.softwareelevators.robotersteuerung.steuerung.VertikalerRegler;
 import de.softwareelevators.robotersteuerung.util.ActivityLauncher;
 import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 import de.softwareelevators.robotersteuerung.util.UiHandler;
 
-public class MainActivity extends AppCompatActivity implements Joystick.JoystickListener, BluetoothController.DataReceivedConnection, BluetoothController.ConnectionStateNotifier, VertikalerRegler.VertikalerReglerListener
+public class MainActivity extends AppCompatActivity
 {
 	/* Ermöglicht das starten anderer Anwendungen - genannt Intents - durch diese Anwendung. Damit ist
 	* es beispielsweise möglich, den Nutzer um das Einschalten von Bluetooth zu bitten. */
 	public final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
 
-	private UiHandler uiHandler;
-	private Sendebegrenzer sendebegrenzer;
+	private Steuereinheit steuereinheit;
+
 	private WLanController wLanController;
 	private BluetoothController bluetoothController;
-
-
-
-	private float fahrgeschwindigkeit;
-	private float lenkwinkel;
-
 
 
 	@Override
@@ -62,60 +59,10 @@ public class MainActivity extends AppCompatActivity implements Joystick.Joystick
 		quardratischer Button zu sehen sein, mit dem dieses Intent erneut geöffnet wird
 		und somit das Verbinden zu einem anderen Gerät möglich ist. */
 
-		uiHandler = new UiHandler(this);
-
 		wLanController = new WLanController();
 		bluetoothController = new BluetoothController("ESP32", this,this, this);
 
-		sendebegrenzer = new Sendebegrenzer(bluetoothController);
-		sendebegrenzer.start();
-	}
-
-	@Override
-	public void onVertikalerReglerMoved(float auslenkungProzent)
-	{
-		/* Wertebereich: [0; 100] */
-		fahrgeschwindigkeit = auslenkungProzent * 100;
-
-		uiHandler.updateSteeringInfo(lenkwinkel, fahrgeschwindigkeit);
-	}
-
-	@Override
-	public void onJoyStickMoved(float xPercent, float yPercent)
-	{
-		/* Lenkwinkel berechnen. Wertebereich: [0;180] (rechte Hälfte), [-0;-180] (linke Hälfte) */
-		float lenkwinkel = lenkwinkelBerechnen(xPercent, yPercent);
-
-		/* Wertebereich: [0; 100] */
-//		float fahrgeschwindigkeit = fahrgeschwindigkeitBerechnen(xPercent, yPercent);
-
-		uiHandler.updateSteeringInfo(lenkwinkel, fahrgeschwindigkeit);
-
-		/* Die neuen Daten in den Sendebegrenzer aktualisieren. Er sendet sie dann, sobald er
-		Zeit dafür hat. Wenn die bereits dort existierenden Daten äquivalten zu den neuen Daten
-		sind wird nicht gesenet. */
-		if (bluetoothController.isConnected())
-			sendebegrenzer.datenAktualisieren(lenkwinkel, fahrgeschwindigkeit);
-	}
-
-	@Override
-	public void onDataReceived(String data)
-	{
-		/* Wird aufgerufen, wenn über den BluetoothController - also vom Roboter - Daten empfangen wurden */
-	}
-
-	@Override
-	public void onConnect(BluetoothDevice connectedDevice)
-	{
-		/* Wird ausgeführt, wenn sich ein BT Gerät mit diesem Gerät verbindet */
-
-		uiHandler.onConnect();
-	}
-
-	@Override
-	public void onDisconnect()
-	{
-		uiHandler.onDisconnect();
+		steuereinheit = new Steuereinheit(findViewById(R.id.joystick), findViewById(R.id.ges_regler), bluetoothController, this);
 	}
 
 	// --

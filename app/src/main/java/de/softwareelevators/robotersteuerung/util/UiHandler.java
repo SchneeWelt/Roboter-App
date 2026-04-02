@@ -4,10 +4,10 @@ package de.softwareelevators.robotersteuerung.util;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
-import de.softwareelevators.robotersteuerung.Joystick;
+import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.VertikalerRegler;
+import de.softwareelevators.robotersteuerung.steuerung.VertikalerRegler;
 
 /**
  * Kümmert sich um die UI Elemente. Also Aktualiserungen
@@ -28,6 +28,9 @@ public class UiHandler
 	private TextView verbindungsstatus;
 
 
+	private float aktuellerLenkwinkel, aktuelleFahrgeschwindigkeit;
+
+
 	public UiHandler(MainActivity mainActivity)
 	{
 		this.mainActivity = mainActivity;
@@ -38,7 +41,7 @@ public class UiHandler
 		Joystick joystick = mainActivity.findViewById(R.id.joystick);
 		joystick.setJoystickListener(mainActivity);
 
-		VertikalerRegler vertikalerRegler = mainActivity.findViewById(R.id.vertikaler_regler);
+		VertikalerRegler vertikalerRegler = mainActivity.findViewById(R.id.ges_regler);
 		vertikalerRegler.setVertikalerReglerListener(mainActivity);
 
 		joystickInfo = mainActivity.findViewById(R.id.controll_info);
@@ -50,6 +53,18 @@ public class UiHandler
 		verbindungsstatus = mainActivity.findViewById(R.id.verbindungsstatus);
 		verbindungsstatus.setText(R.string.nicht_verbunden);
 		verbindungsstatus.setTextColor(GRAU);
+
+		/* Sollte Deamon sein! Sollte keinen direkten Lambda bekommen, lieber Methodenreferenz */
+		new Thread(() -> {
+			mainActivity.runOnUiThread(() -> updateInfoDisplay(aktuellerLenkwinkel, aktuelleFahrgeschwindigkeit));
+
+			try{
+			Thread.sleep(500);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 
@@ -70,7 +85,17 @@ public class UiHandler
 		mainActivity.runOnUiThread(this::onDisconnect_StatusUpdate);
 	}
 
-	public void updateSteeringInfo(float lenkwinkel, float fahrgeschwindigkeit)
+	public void updateLenkwinkel(float lenkwinkel)
+	{
+		this.aktuellerLenkwinkel = lenkwinkel;
+	}
+
+	public void updateFahrgeschwindigkeit(float fahregeschwindigkeit)
+	{
+		this.aktuelleFahrgeschwindigkeit = fahregeschwindigkeit;
+	}
+
+	private void updateInfoDisplay(float lenkwinkel, float fahrgeschwindigkeit)
 	{
 		String info = String.format("Fahrgeschwindigkeit: %.2f%%\nLenkwinkel: %.2f°", fahrgeschwindigkeit, lenkwinkel);
 		joystickInfo.setText(info);

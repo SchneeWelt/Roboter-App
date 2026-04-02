@@ -1,4 +1,4 @@
-package de.softwareelevators.robotersteuerung;
+package de.softwareelevators.robotersteuerung.steuerung;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -94,7 +94,7 @@ public class VertikalerRegler extends View
 		float a = limitPosition;
 		float b = restingPosition;
 		float x = cursorY;
-		vertikalerReglerListener.onVertikalerReglerMoved((x - a) / (b - a));
+		vertikalerReglerListener.onReglerMoved((x - a) / (b - a));
 
 		invalidate();
 
@@ -122,6 +122,6 @@ public class VertikalerRegler extends View
 
 	public interface VertikalerReglerListener
 	{
-		void onVertikalerReglerMoved(float auslenkungProzent);
+		void onReglerMoved(float auslenkungProzent);
 	}
 }
