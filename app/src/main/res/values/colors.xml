@@ -6,5 +6,8 @@
 	<color name="grün">#22C55E</color>
 	<color name="grau">#9CA3AF</color>
 
+	<color name="orange"> #EBB134 </color>
+	<color name="hellblau"> #31b1e8 </color>
+	<color name="türkies"> #42b8aa </color>
 
 </resources>

@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import de.softwareelevators.robotersteuerung.R;
 
 public class VertikalerRegler extends View	// aka Slider
 {
@@ -31,21 +33,21 @@ public class VertikalerRegler extends View	// aka Slider
 	{
 		super(context, attrs, defStyleAttr);
 
-		setup();
+		setup(context);
 	}
 
 	public VertikalerRegler(Context context, @Nullable @org.jspecify.annotations.Nullable AttributeSet attrs)
 	{
 		super(context, attrs);
 
-		setup();
+		setup(context);
 	}
 
 	public VertikalerRegler(Context context)
 	{
 		super(context);
 
-		setup();
+		setup(context);
 	}
 
 	@Override
@@ -59,8 +61,8 @@ public class VertikalerRegler extends View	// aka Slider
 		cursorWidth = baseWidth;
 		cursorHeight = baseHeight * 0.03f;
 
-		restingPosition = baseHeight * 0.96f - cursorHeight;	// Ruhposition untere Kante des Cursors
-		limitPosition = baseHeight * 0.08f;	// Ruhposition obere Kante des Cursors
+		restingPosition = baseHeight * 0.97f - cursorHeight;	// Ruhposition untere Kante des Cursors
+		limitPosition = baseHeight * 0.04f;	// Ruhposition obere Kante des Cursors
 
 		cursorX = 0;
 		cursorY = restingPosition;
@@ -71,11 +73,16 @@ public class VertikalerRegler extends View	// aka Slider
 	{
 		super.onDraw(canvas);
 
+		/* Abrundung der Kanten */
+		float radiusBase = 25;
+		float radiusCursor = 10f;
+
 		/* Base zeichen */
-		canvas.drawRect(0, 0, baseWidth, baseHeight, basePaint);
+		canvas.drawRoundRect(0, 0, baseWidth, baseHeight, radiusBase, radiusBase, basePaint);
 
 		/* Cursor zeichnen */
-		canvas.drawRect(cursorX, cursorY - cursorHeight / 2, cursorWidth, cursorY + cursorHeight, cursorPaint);
+		float seitenabstand = baseWidth * 0.055f;
+		canvas.drawRoundRect(cursorX + seitenabstand, cursorY - cursorHeight / 2, cursorWidth - seitenabstand, cursorY + cursorHeight, radiusCursor, radiusCursor, cursorPaint);
 	}
 
 	@Override
@@ -101,9 +108,9 @@ public class VertikalerRegler extends View	// aka Slider
 		return true;
 	}
 
-	private void setup()
+	private void setup(Context context)
 	{
-		int basePaintColor = Color.rgb(235, 177, 52);
+		int basePaintColor =  ContextCompat.getColor(context, R.color.orange);
 
 		basePaint = new Paint();
 		basePaint.setColor(basePaintColor);

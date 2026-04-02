@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import de.softwareelevators.robotersteuerung.MainActivity;
+import de.softwareelevators.robotersteuerung.R;
 
 
 public class Joystick extends View
@@ -27,21 +30,21 @@ public class Joystick extends View
 	{
 		super(context);
 
-		setup();
+		setup(context);
 	}
 
 	public Joystick(Context context, @Nullable @org.jspecify.annotations.Nullable AttributeSet attrs)
 	{
 		super(context, attrs);
 
-		setup();
+		setup(context);
 	}
 
 	public Joystick(Context context, @Nullable @org.jspecify.annotations.Nullable AttributeSet attrs, int defStyleAttr)
 	{
 		super(context, attrs, defStyleAttr);
 
-		setup();
+		setup(context);
 	}
 
 
@@ -125,9 +128,9 @@ public class Joystick extends View
 		this.joystickListener = joystickListener;
 	}
 
-	private void setup()
+	private void setup(Context context)
 	{
-		int basePaintColor = Color.rgb(235, 177, 52);
+		int basePaintColor =  ContextCompat.getColor(context, R.color.orange);
 
 		basePaint = new Paint();
 		basePaint.setColor(basePaintColor);
