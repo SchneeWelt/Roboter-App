@@ -1,63 +1,64 @@
 package de.softwareelevators.robotersteuerung.networkController;
 
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+
 /** Erlaubt das Herstellen von Verbindungen zu anderen Geräten
- * über WLan. Jeweils eine Verbindung pro COntroller Instanz.
+ * über WLan. Jeweils eine Verbindung pro App Instanz.
  * Anschließend ist die Datenübertragung zu dem verbundenen Gerät
  * möglich. */
 public class WLanController extends NetworkController
 {
+	private Socket socket;
+
+	hier sind noch einnige Fehler drinn. Gebe Copilot diese Klasse und lass sie von ihm bewerten.
+
 	@Override
 	public void connect()
 	{
+		/* Verbindung zum ESP32 herstellen - nur möglich, wenn Handy mit ESP32-WLan verbunden */
+		try
+		{
+			socket = new Socket("192.168.4.1", 1234);
+		} catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+
+
+	}
+
+	@Override
+	public void sendData(String data)
+	{
+		new Thread(() ->
+		{
+			try
+			{
+				OutputStream outputStream = socket.getOutputStream();
+
+				outputStream.write(data.getBytes());
+				outputStream.flush();
+			} catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+
+		}).start();
 
 	}
 
 	@Override
 	public void disconnect()
 	{
-
-	}
-
-	//	Ich will auf WLan umsteigen (Doppelte Reichweite). Der ESP32 Sketch
-//	dafür ist fertig. Es muss nur noch ein WLan Kontroller in dieser App
-//	gebaut werden, so dass diese APP auch WLan Daten an den ESP32 senden
-//	kann.
-//
-//	das hier wär wohl irgendwie der code:
-
-//		new Thread(() -> {
-//			try {
-//				// Verbindung zum ESP32 herstellen
-//				Socket socket = new Socket("192.168.4.1", 1234);		// Hierfür muss das Handy bereits im WLan des EPS32 sein
-//
-//				// Streams holen
-//				OutputStream out = socket.getOutputStream();
-//				InputStream in = socket.getInputStream();
-//
-//				// Beispiel: Ein Byte senden
-//				out.write(42); // z.B. Steuerbefehl
-//
-//				// Beispiel: Antwort lesen
-//				int received = in.read();
-//				System.out.println("ESP32 sendet: " + received);
-//
-//				// Verbindung offen lassen oder später schließen
-//				// socket.close();
-//
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}).start();
-
-
-
-//	ja sind wirklich nur 50 zeilen....
-
-
-	@Override
-	public void sendData(String data)
-	{
-
+		try
+		{
+			socket.close();
+		} catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }
