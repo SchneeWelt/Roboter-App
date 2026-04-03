@@ -64,7 +64,7 @@
 			android:id="@+id/connect_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:backgroundTint="@color/hellblau"
+			android:backgroundTint="@color/violett"
 			android:textColor="@color/grau"
 
 			app:layout_constraintBottom_toBottomOf="parent"

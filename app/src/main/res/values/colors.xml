@@ -3,11 +3,18 @@
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
 
-	<color name="grün">#22C55E</color>
+	<!-- Verwendet für alle Textfarben -->
 	<color name="grau">#9CA3AF</color>
 
+	<!-- Verwendet für "Verbindung Hergestellt" Signifier -->
+	<color name="grün">#22C55E</color>
+
+	<!-- Verwendet für Steuerelemente -->
 	<color name="orange"> #EBB134 </color>
-	<color name="hellblau"> #31b1e8 </color>
-	<color name="türkies"> #42b8aa </color>
+
+	<!--	<color name="hellblau"> #31b1e8 </color>-->
+
+	<!-- Verwendet für Buttons -->
+	<color name="violett"> #48358B </color>
 
 </resources>
