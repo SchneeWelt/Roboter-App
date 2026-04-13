@@ -1,0 +1,8 @@
+
+
+
+-           Timeout: Nach 3 Sekunden, bei denen der Roboter keine neuen Befehle erhalten
+            erhalten hat, setzt er seine Geschwindigkeit und seinen Lenkwinkel auf 0. So
+            wird verhindert, dass der Roboter bei einem Kontaktabbruch endlos weiter gerade
+            aus fährt.
+                                            TODO 13.04.2026
