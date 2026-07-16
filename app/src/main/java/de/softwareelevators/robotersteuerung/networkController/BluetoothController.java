@@ -58,7 +58,6 @@ public class BluetoothController extends NetworkController
 	private NetworConnectionStateListener networConnectionStateListener;
 	private DataReceivedListener dataReceivedListener;
 
-
 	public BluetoothController(String deviceName, DataReceivedListener dataReceivedListener, NetworConnectionStateListener networConnectionStateListener, MainActivity mainActivity)
 	{
 		this.deviceName = deviceName;
@@ -263,6 +262,10 @@ public class BluetoothController extends NetworkController
 		verbunden ist. Sein Outputstream sendet Daten direkt an den Socket des
 		anderen Geräts. Der Inputstream von diesem Socket erhält entsprechend
 		Daten, die vom anderen Gerät an dieses Gerät gesendet wurden. */
+
+		/* Möglicherweise sollte hier ein eigener Thread zum senden der
+		Daten geöffnet werden. Somit blockieren sich Threads nicht
+		gegenseitig */
 
 		try
 		{
