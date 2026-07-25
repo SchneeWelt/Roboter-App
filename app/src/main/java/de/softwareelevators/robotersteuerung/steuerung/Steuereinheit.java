@@ -32,6 +32,8 @@ public class Steuereinheit implements VertikalerRegler.SliderListener, Joystick.
 		joystick.setJoystickListener(this);
 		geschwindigkeitsregler.setSliderListener(this);
 
+		baue ges regler zurückl
+
 		/* UI Handler initialisieren */
 		uiUpdater = new UiUpdater(activeNetworkController, mainActivity);
 
