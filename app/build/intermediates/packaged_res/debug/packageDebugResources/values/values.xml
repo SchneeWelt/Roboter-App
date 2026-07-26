@@ -3,6 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="grau">#9CA3AF</color>
     <color name="grün">#22C55E</color>
+    <color name="orange"> #EBB134 </color>
+    <color name="violett"> #48358B </color>
     <color name="white">#FFFFFFFF</color>
     <string name="app_name">Robotersteuerung</string>
     <string name="nicht_verbunden"> Verbindung offen </string>

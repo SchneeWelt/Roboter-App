@@ -3,6 +3,8 @@ local
 color black
 color grau
 color grün
+color orange
+color violett
 color white
 id connect_button
 id connection_info

@@ -3,24 +3,24 @@
 3    package="de.softwareelevators.robotersteuerung.test" >
 4
 5    <uses-sdk
-5-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:5:5-74
+5-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:5:5-74
 6        android:minSdkVersion="31"
-6-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:5:15-41
+6-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:5:15-41
 7        android:targetSdkVersion="36" />
-7-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:5:42-71
+7-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:5:42-71
 8
 9    <instrumentation
-9-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:11:5-15:87
+9-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:11:5-15:87
 10        android:name="androidx.test.runner.AndroidJUnitRunner"
-10-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:11:22-76
+10-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:11:22-76
 11        android:functionalTest="false"
-11-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:14:22-52
+11-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:14:22-52
 12        android:handleProfiling="false"
-12-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:13:22-53
+12-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:13:22-53
 13        android:label="Tests for de.softwareelevators.robotersteuerung"
-13-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:15:22-85
+13-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:15:22-85
 14        android:targetPackage="de.softwareelevators.robotersteuerung" />
-14-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:12:22-83
+14-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:12:22-83
 15
 16    <queries>
 16-->[androidx.test:runner:1.7.0] C:\Users\jaapi\.gradle\caches\8.13\transforms\b78efbe24014f246b0ba1efa1b02da84\transformed\runner-1.7.0\AndroidManifest.xml:24:5-28:15
@@ -40,12 +40,12 @@
 22-->[androidx.test:core:1.7.0] C:\Users\jaapi\.gradle\caches\8.13\transforms\64de5d6d63f81d416480bbf4ea098f6c\transformed\core-1.7.0\AndroidManifest.xml:24:22-69
 23
 24    <application
-24-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:7:5-9:19
+24-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:7:5-9:19
 25        android:debuggable="true"
 26        android:extractNativeLibs="false" >
 27        <uses-library android:name="android.test.runner" />
-27-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:8:9-60
-27-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest16917970950452286185.xml:8:23-57
+27-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:8:9-60
+27-->C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest8446445133752826599.xml:8:23-57
 28
 29        <activity
 29-->[androidx.test:core:1.7.0] C:\Users\jaapi\.gradle\caches\8.13\transforms\64de5d6d63f81d416480bbf4ea098f6c\transformed\core-1.7.0\AndroidManifest.xml:27:9-34:20

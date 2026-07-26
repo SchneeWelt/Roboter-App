@@ -14,6 +14,12 @@ public class MainActivity extends AppCompatActivity
 	 * es beispielsweise möglich, den Nutzer um das Einschalten von Bluetooth zu bitten. */
 	public final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
 
+	/*
+		in meiner android sdk fehlt mit das emulator package. Ohne das kann ich keine vms betreiben.
+		ich muss irgendwie noch an dieses package ran kommen.
+
+	 */
+
 
 	/**
 	 * Verantwortlich für das Stuern des Roboters. Aktualisiert auch die GUI
