@@ -1,0 +1,3 @@
+de.softwareelevators.robotersteuerung.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme

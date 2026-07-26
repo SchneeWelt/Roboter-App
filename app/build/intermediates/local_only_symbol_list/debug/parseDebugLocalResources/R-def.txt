@@ -1,0 +1,26 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color grau
+color grün
+color white
+id connect_button
+id connection_info
+id ges_regler
+id joystick
+id steuerdaten_display
+id verbindungsstatus
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_background
+mipmap ic_launcher_foreground
+mipmap ic_launcher_round
+string app_name
+string nicht_verbunden
+string verbinden
+string verbindung_trennen
+string verbunden
+style Base.Theme.Robotersteuerung
+style Theme.Robotersteuerung
+xml backup_rules
+xml data_extraction_rules
