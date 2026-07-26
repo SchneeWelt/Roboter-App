@@ -1,7 +1,0 @@
-de.softwareelevators.robotersteuerung.test.app-core-1.7.0-0 C:\Users\jaapi\.gradle\caches\8.13\transforms\64de5d6d63f81d416480bbf4ea098f6c\transformed\core-1.7.0\res
-de.softwareelevators.robotersteuerung.test.app-tracing-1.2.0-1 C:\Users\jaapi\.gradle\caches\8.13\transforms\fc966ebebf21ee4bb61fde51678437bc\transformed\tracing-1.2.0\res
-de.softwareelevators.robotersteuerung.test.app-androidTest-2 C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\generated\res\resValues\androidTest\debug
-de.softwareelevators.robotersteuerung.test.app-updated_navigation_xml-3 C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\generated\updated_navigation_xml\debugAndroidTest
-de.softwareelevators.robotersteuerung.test.app-mergeDebugAndroidTestResources-4 C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-de.softwareelevators.robotersteuerung.test.app-mergeDebugAndroidTestResources-5 C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-de.softwareelevators.robotersteuerung.test.app-debugAndroidTest-6 C:\Users\jaapi\workspace\intellij 2026\RoboterApp\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
