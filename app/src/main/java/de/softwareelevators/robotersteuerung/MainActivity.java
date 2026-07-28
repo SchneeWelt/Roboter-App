@@ -14,12 +14,6 @@ public class MainActivity extends AppCompatActivity
 	 * es beispielsweise möglich, den Nutzer um das Einschalten von Bluetooth zu bitten. */
 	public final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
 
-	/*
-		in meiner android sdk fehlt mit das emulator package. Ohne das kann ich keine vms betreiben.
-		ich muss irgendwie noch an dieses package ran kommen.
-
-	 */
-
 
 	/**
 	 * Verantwortlich für das Stuern des Roboters. Aktualisiert auch die GUI
@@ -30,20 +24,9 @@ public class MainActivity extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		/*
-			Bei diesem Projekt handelt es sich um ein Git Projekt, in welchem
-			unterschiedliche Features auf unterschiedlichen Branches implementiert
-			werden. Aktuell existiert der main Branch - genannt Master - und ein
-			Branch, auf dem das Sprinting Feature wieder entfernt wurde. Mit
-			git checkout kann zwischen beiden Branches gewechselt werden. Mit
-			git branch kann der aktuell ausgewählte Branch angezeigt werden.
-		 */
-
-
 		super.onCreate(savedInstanceState);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
 		setContentView(R.layout.activity_main);
 
 		setup();
@@ -59,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 		quardratischer Button zu sehen sein, mit dem dieses Intent erneut geöffnet wird
 		und somit das Verbinden zu einem anderen Gerät möglich ist. */
 
-		steuereinheit = new Steuereinheit(findViewById(R.id.joystick), findViewById(R.id.ges_regler), this);
+		steuereinheit = new Steuereinheit(this);
 	}
 
 	// --

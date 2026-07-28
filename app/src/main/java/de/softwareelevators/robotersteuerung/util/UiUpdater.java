@@ -4,9 +4,10 @@ package de.softwareelevators.robotersteuerung.util;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
-import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.networkController.NetworkController;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
+import de.softwareelevators.robotersteuerung.steuerung.Joystick;
+import de.softwareelevators.robotersteuerung.steuerung.Steuereinheit;
 
 /**
  * Kümmert sich um die aktualisierung der auf der UI angezeigten
@@ -14,16 +15,23 @@ import de.softwareelevators.robotersteuerung.networkController.NetworkController
  * von kleineren Elementen der UI. Joystick und Geschindigkeitsregler
  * sind aber ganz klar ausgenommen.
  */
+
+
+/**
+ * Ein Adapter für alle UI Elemente der App. Die Elemente existieren hier als
+ * Objekte und dessen Daten werden hier verarbeitet
+ */
 public class UiUpdater
 {
 	private final int GRÜN, GRAU;
 
-	private MainActivity mainActivity;
-
 	private Button connectButton;
 	private TextView stuerdatendisplay;
 	private TextView verbindungsstatusdisplay;
-	private NetworkController networkController;
+	private NetworkAdapter networkAdapter;
+
+
+	private Joystick joystick;
 
 
 	private float lenkwinkel, fahrgeschwindigkeit;
@@ -35,10 +43,11 @@ public class UiUpdater
 	 *                          aktiviert und deaktiviert.
 	 * @param mainActivity
 	 */
-	public UiUpdater(NetworkController networkController, MainActivity mainActivity)
+	public UiUpdater(Steuereinheit steuereinheit)
 	{
-		this.mainActivity = mainActivity;
-		this.networkController = networkController;
+		this.networkAdapter = networkAdapter;
+
+		this.joystick = mainActivity.findViewById(R.id.joystick);
 
 		GRÜN = ContextCompat.getColor(mainActivity, R.color.grün);
 		GRAU = ContextCompat.getColor(mainActivity, R.color.grau);
@@ -47,7 +56,7 @@ public class UiUpdater
 		stuerdatendisplay.setText("...");
 
 		connectButton = mainActivity.findViewById(R.id.connect_button);
-		connectButton.setOnClickListener((view) -> networkController.connect());
+		connectButton.setOnClickListener((view) -> networkAdapter.connect());
 
 		verbindungsstatusdisplay = mainActivity.findViewById(R.id.verbindungsstatus);
 		verbindungsstatusdisplay.setText(R.string.nicht_verbunden);
@@ -97,7 +106,7 @@ public class UiUpdater
 	private void onDisconnect_ButtonUpdate()
 	{
 		connectButton.setText(R.string.verbinden);
-		connectButton.setOnClickListener((view) -> networkController.connect());
+		connectButton.setOnClickListener((view) -> networkAdapter.connect());
 	}
 
 	private void onDisconnect_StatusUpdate()
@@ -109,7 +118,7 @@ public class UiUpdater
 	private void onConnect_ButtonUpdate()
 	{
 		connectButton.setText(R.string.verbindung_trennen);
-		connectButton.setOnClickListener((view) -> networkController.disconnect());
+		connectButton.setOnClickListener((view) -> networkAdapter.disconnect());
 	}
 
 	private void onConnect_StatusUpdate()

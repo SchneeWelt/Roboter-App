@@ -1,4 +1,4 @@
-package de.softwareelevators.robotersteuerung.networkController;
+package de.softwareelevators.robotersteuerung.networkAdapter;
 
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
  * über WLan. Jeweils eine Verbindung pro App Instanz.
  * Anschließend ist die Datenübertragung zu dem verbundenen Gerät
  * möglich. */
-public class WLanController extends NetworkController
+public class WLanAdapter extends NetworkAdapter
 {
 	private Socket socket;
 

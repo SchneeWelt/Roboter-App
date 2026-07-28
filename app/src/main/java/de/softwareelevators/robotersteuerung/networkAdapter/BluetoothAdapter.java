@@ -1,4 +1,4 @@
-package de.softwareelevators.robotersteuerung.networkController;
+package de.softwareelevators.robotersteuerung.networkAdapter;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,7 +22,7 @@ import java.util.UUID;
  * Datenübertragung zu diesem Gerät möglich. Jeweils eine Verbindung pro COntroller Instanz.
  *  * Anschließend ist die Datenübertragung zu dem verbundenen Gerät
  *  * möglich. */
-public class BluetoothController extends NetworkController
+public class BluetoothAdapter extends NetworkAdapter
 {
 	/**
 	* Der name von dem BT Classic Gerät, mit dem sich dises
@@ -38,7 +38,7 @@ public class BluetoothController extends NetworkController
 	* verwaltet, mit der alle mit diesem Gerät gekoppelten BT
 	* Gerät ausgelesen werden können. Das ist für den Verbindungsaufbau
 	* zum Zielgerät sehr wichtig. */
-	private BluetoothAdapter bluetoothAdapter;
+	private android.bluetooth.BluetoothAdapter bluetoothAdapter;
 
 	/** Das BT Gerät, mit dem diese Anwendung verbunden ist.
 	* Ist dieses Objekt null, so besteht keine BT Verbindung
@@ -59,7 +59,7 @@ public class BluetoothController extends NetworkController
 	private DataReceivedListener dataReceivedListener;
 
 
-	public BluetoothController(String deviceName, DataReceivedListener dataReceivedListener, NetworConnectionStateListener networConnectionStateListener, MainActivity mainActivity)
+	public BluetoothAdapter(String deviceName, DataReceivedListener dataReceivedListener, NetworConnectionStateListener networConnectionStateListener, MainActivity mainActivity)
 	{
 		this.deviceName = deviceName;
 		this.mainActivity = mainActivity;
@@ -98,7 +98,7 @@ public class BluetoothController extends NetworkController
 			/* Eine andere Anwendung starten - hier die Bluetooth Anwendung des Handys,
 			um den Nutzer aufzufordern Bluetooth einzuschalten. Das Ergebnis seiner Aktion
 			wird in einem Callback über den Result Code ausgegeben. */
-			Intent enableBtRequest = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			Intent enableBtRequest = new Intent(android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			mainActivity.activityLauncher.launch(enableBtRequest, this::handleEnableBtResult);
 			// this::handleEnableBtResult übergibt Referenz von handleEnableBtResult() an launch Methode
 			// => Direkte Lambda spezifikation wird vermieden, was den Code lesbarer macht.

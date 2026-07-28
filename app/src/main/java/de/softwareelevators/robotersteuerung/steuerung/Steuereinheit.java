@@ -2,43 +2,66 @@ package de.softwareelevators.robotersteuerung.steuerung;
 
 import android.bluetooth.BluetoothDevice;
 import de.softwareelevators.robotersteuerung.MainActivity;
-import de.softwareelevators.robotersteuerung.networkController.BluetoothController;
-import de.softwareelevators.robotersteuerung.networkController.NetworkController;
-import de.softwareelevators.robotersteuerung.networkController.WLanController;
-import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
+import de.softwareelevators.robotersteuerung.networkAdapter.WLanAdapter;
 import de.softwareelevators.robotersteuerung.util.UiUpdater;
 
-public class Steuereinheit implements VertikalerRegler.SliderListener, Joystick.JoystickListener, NetworkController.DataReceivedListener, NetworkController.NetworConnectionStateListener
+
+/**
+ * Besteht aus Adaptern und bildet die oberste Ebene der App. Wird direkt
+ * aus der MainActivity heraus gestartet
+ */
+public class Steuereinheit implements VertikalerRegler.SliderListener, Joystick.JoystickListener, NetworkAdapter.DataReceivedListener, NetworkAdapter.NetworConnectionStateListener
 {
 	/** True, wenn Verbindung zu Roboter über NetworkController besteht. */
 	private boolean verbindungHergestellt;
 
-	private Joystick joystick;
-	private UiUpdater uiUpdater;
-	private Sendebegrenzer sendebegrenzer;
-	private VertikalerRegler geschwindigkeitsregler;
+	private final UiUpdater uiUpdater;
+	private final NetworkAdapter networkAdapter;
 
 
-	public Steuereinheit(Joystick joystick, VertikalerRegler geschwindigkeitsregler, MainActivity mainActivity)
+//	private Sendebegrenzer sendebegrenzer;
+//	private VertikalerRegler geschwindigkeitsregler;
+
+	public Steuereinheit(MainActivity mainActivity)
 	{
-		this.joystick = joystick;
-		this.geschwindigkeitsregler = geschwindigkeitsregler;
-
 		/* Netzwerkcontroller einrichten */
-//		wLanController = new WLanController();
-		NetworkController activeNetworkController = new BluetoothController("ESP32", this,this, mainActivity);;
+		networkAdapter = new WLanAdapter();
+//		networkAdapter = new BluetoothController("ESP32", this,this, mainActivity);;
 
 		/* Steuerelemtschnittstellen der Views mit der Steuereinheit verbinden */
-		joystick.setJoystickListener(this);
-		geschwindigkeitsregler.setSliderListener(this);
+//		joystick.setJoystickListener(this);
+//		geschwindigkeitsregler.setSliderListener(this);
 
 		/* UI Handler initialisieren */
-		uiUpdater = new UiUpdater(activeNetworkController, mainActivity);
+		uiUpdater = new UiUpdater(this);
 
 		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
-		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
-		sendebegrenzer.start();
+//		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
+//		sendebegrenzer.start();
 	}
+
+
+//	public Steuereinheit(Joystick joystick, VertikalerRegler geschwindigkeitsregler, MainActivity mainActivity)
+//	{
+//		this.joystick = joystick;
+//		this.geschwindigkeitsregler = geschwindigkeitsregler;
+//
+//		/* Netzwerkcontroller einrichten */
+////		wLanController = new WLanController();
+//		NetworkController activeNetworkController = new BluetoothController("ESP32", this,this, mainActivity);;
+//
+//		/* Steuerelemtschnittstellen der Views mit der Steuereinheit verbinden */
+//		joystick.setJoystickListener(this);
+//		geschwindigkeitsregler.setSliderListener(this);
+//
+//		/* UI Handler initialisieren */
+//		uiUpdater = new UiUpdater(activeNetworkController, mainActivity);
+//
+//		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
+//		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
+//		sendebegrenzer.start();
+//	}
 
 	@Override
 	public void onSliderMoved(float sliderPositionPercent)

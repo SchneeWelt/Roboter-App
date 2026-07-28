@@ -1,7 +1,7 @@
 package de.softwareelevators.robotersteuerung.util;
 
 
-import de.softwareelevators.robotersteuerung.networkController.NetworkController;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 
 /**
  * Kapselt Methoden, die zum Senden der BT Daten an den Roboter
@@ -9,11 +9,11 @@ import de.softwareelevators.robotersteuerung.networkController.NetworkController
  */
 public class BtSender
 {
-	private NetworkController networkController;
+	private NetworkAdapter networkAdapter;
 
-	public BtSender(NetworkController networkController)
+	public BtSender(NetworkAdapter networkAdapter)
 	{
-		this.networkController = networkController;
+		this.networkAdapter = networkAdapter;
 	}
 
 
@@ -27,9 +27,9 @@ public class BtSender
 		/* Deadzone, um Zittern des Roboters zu verhinden */
 		float deadzone = 5f;	// Entfernung von Joystick Center mindestens 5%
 		if (fahrgeschwindigkeit < deadzone)
-			networkController.sendData(baueSteuerdaten(0, 0));
+			networkAdapter.sendData(baueSteuerdaten(0, 0));
 		else
-			networkController.sendData(baueSteuerdaten(lenkwinkel, fahrgeschwindigkeit));
+			networkAdapter.sendData(baueSteuerdaten(lenkwinkel, fahrgeschwindigkeit));
 
 		/* Debugdaten in der Konsole ausgeben */
 		Ausgabe.blank();

@@ -3,8 +3,7 @@ package de.softwareelevators.robotersteuerung.util;
 
 import android.os.Handler;
 import android.os.Looper;
-import de.softwareelevators.robotersteuerung.networkController.BluetoothController;
-import de.softwareelevators.robotersteuerung.networkController.NetworkController;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 
 /**
  * Diese Hilfklasse verwendet das Produce-Consumer Pattern,
@@ -30,12 +29,12 @@ public class Sendebegrenzer
 	private Handler handler;
 	private BtSender btSender;
 
-	public Sendebegrenzer(NetworkController networkController)
+	public Sendebegrenzer(NetworkAdapter networkAdapter)
 	{
 		vorheriegerLenkwinkel = Integer.MIN_VALUE;
 		vorheriegeFahrgeschwindigkeit = Integer.MIN_VALUE;
 
-		btSender = new BtSender(networkController);
+		btSender = new BtSender(networkAdapter);
 
 		handler = new Handler(Looper.getMainLooper());
 	}
