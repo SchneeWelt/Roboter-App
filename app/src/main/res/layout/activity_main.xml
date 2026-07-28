@@ -10,7 +10,7 @@
 		android:background="#000000"
 >
 
-	<TextView
+	<de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay
 			android:text="Not Connected..."
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
 			app:layout_constraintHorizontal_bias="0.965"
 			app:layout_constraintVertical_bias="0.38"/>
 
-	<TextView
+	<de.softwareelevators.robotersteuerung.uiWidgets.SteeringDataDisplay
 			android:text="Fahrgeschwindigkeit: 80%\nLenkwinkel: 12°"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

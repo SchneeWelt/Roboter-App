@@ -4,19 +4,20 @@ import android.bluetooth.BluetoothDevice;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.networkAdapter.WLanAdapter;
-import de.softwareelevators.robotersteuerung.util.UiUpdater;
+import de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter;
 
 
 /**
  * Besteht aus Adaptern und bildet die oberste Ebene der App. Wird direkt
  * aus der MainActivity heraus gestartet
  */
-public class Steuereinheit implements VertikalerRegler.SliderListener, Joystick.JoystickListener, NetworkAdapter.DataReceivedListener, NetworkAdapter.NetworConnectionStateListener
+public class Steuereinheit
 {
-	/** True, wenn Verbindung zu Roboter über NetworkController besteht. */
-	private boolean verbindungHergestellt;
+	/** True, wenn Verbindung zu Roboter über
+	 * NetworkController besteht */
+	private boolean connectionEstablished;
 
-	private final UiUpdater uiUpdater;
+	private final UIAdapter uiAdapter;
 	private final NetworkAdapter networkAdapter;
 
 
@@ -34,7 +35,7 @@ public class Steuereinheit implements VertikalerRegler.SliderListener, Joystick.
 //		geschwindigkeitsregler.setSliderListener(this);
 
 		/* UI Handler initialisieren */
-		uiUpdater = new UiUpdater(this);
+		uiAdapter = new UIAdapter(this, mainActivity);
 
 		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
 //		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
@@ -69,20 +70,8 @@ public class Steuereinheit implements VertikalerRegler.SliderListener, Joystick.
 		/* Wertebereich: [0; 100] */
 		float fahrgeschwindigkeit = sliderPositionPercent * 100;
 
-		uiUpdater.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
+		uiAdapter.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
 		sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
-	}
-
-	@Override
-	public void onJoyStickMoved(float xPercent, float yPercent)
-	{
-		/* Lenkwinkel berechnen. Wertebereich: [0;180] (rechte Hälfte), [-0;-180] (linke Hälfte) */
-		float lenkwinkel = lenkwinkelBerechnen(xPercent, yPercent);
-
-		uiUpdater.lenkwinkeltAktualisieren(lenkwinkel);
-
-		if (verbindungHergestellt)
-			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
 	}
 
 	@Override
@@ -94,33 +83,31 @@ public class Steuereinheit implements VertikalerRegler.SliderListener, Joystick.
 	@Override
 	public void onConnect(BluetoothDevice connectedDevice)
 	{
-		uiUpdater.onConnect();
+		uiAdapter.onDeviceConnected();
 
-		verbindungHergestellt = true;
+		connectionEstablished = true;
 	}
 
 	@Override
 	public void onDisconnect()
 	{
-		uiUpdater.onDisconnect();
+		uiAdapter.onDisconnect();
 
-		verbindungHergestellt = false;
+		connectionEstablished = false;
 	}
 
-	private float lenkwinkelBerechnen(float xPercent, float yPercent)
+	public NetworkAdapter getNetworkAdapter()
 	{
-		float lenkwinkel = (float) Math.toDegrees(Math.atan2(yPercent, xPercent));
+		return networkAdapter;
+	}
 
-		/* Koordinatensystem drehen: oben: 0°, 90°: rechts, 180°: unten, -90°:links.
-		 * Das ist richtig so und sorgt dafür, dass geradeausfahren gleichbedeutend
-		 * zu Joystick nach oben bewegen ist. */
-		lenkwinkel += 90;
+	public UIAdapter getUiAdapter()
+	{
+		return uiAdapter;
+	}
 
-		/* Verschobenes Koordinatensystem jetzt noch normalisieren, damit die Werte innerhalb
-		von +-180 Grad bleiben - also so sind, wie oben beschrieben */
-		if (lenkwinkel > 180) lenkwinkel -= 360;
-		if (lenkwinkel < -180) lenkwinkel += 360;
-
-		return lenkwinkel;
+	public boolean isConnectionEstablished()
+	{
+		return connectionEstablished;
 	}
 }
