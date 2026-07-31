@@ -15,7 +15,9 @@ import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
  * existieren, aber wegen der zeitlichen Limitierung
  * noch nicht gesendet werden können. Mache ich hier nicht.
  * Man würde aber wohl eine Queu verwenden.
- *
+ * <p>
+ * Verwendet den NetworkAdapter, um Daten an das jeweils
+ * verbundene Gerät (den Roboter) zu senden
  */
 public class Sendebegrenzer
 {
@@ -27,14 +29,14 @@ public class Sendebegrenzer
 
 
 	private Handler handler;
-	private BtSender btSender;
+	private SendingWrapper sendingWrapper;
 
 	public Sendebegrenzer(NetworkAdapter networkAdapter)
 	{
 		vorheriegerLenkwinkel = Integer.MIN_VALUE;
 		vorheriegeFahrgeschwindigkeit = Integer.MIN_VALUE;
 
-		btSender = new BtSender(networkAdapter);
+		sendingWrapper = new SendingWrapper(networkAdapter);
 
 		handler = new Handler(Looper.getMainLooper());
 	}
@@ -79,7 +81,7 @@ public class Sendebegrenzer
 		/* Nur bei Wertänderung senden -> Spamvermeidung */
 		if (lenkwinkelÄnderung || fahrgeschwindigkeitsÄnderung)
 		{
-			btSender.steuerdatenSenden(lenkwinkel, fahrgeschwindigkeit);
+			sendingWrapper.steuerdatenSenden(lenkwinkel, fahrgeschwindigkeit);
 
 			vorheriegerLenkwinkel = lenkwinkel;
 			vorheriegeFahrgeschwindigkeit = fahrgeschwindigkeit;

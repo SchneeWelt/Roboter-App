@@ -5,6 +5,7 @@ import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.networkAdapter.WLanAdapter;
 import de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter;
+import de.softwareelevators.robotersteuerung.util.ConnectionState;
 
 
 /**
@@ -13,12 +14,10 @@ import de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter;
  */
 public class Steuereinheit
 {
-	/** True, wenn Verbindung zu Roboter über
-	 * NetworkController besteht */
-	private boolean connectionEstablished;
 
 	private final UIAdapter uiAdapter;
 	private final NetworkAdapter networkAdapter;
+	private final ConnectionState connectionState;
 
 
 //	private Sendebegrenzer sendebegrenzer;
@@ -40,6 +39,8 @@ public class Steuereinheit
 		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
 //		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
 //		sendebegrenzer.start();
+
+		connectionState = new ConnectionState();
 	}
 
 
@@ -85,7 +86,7 @@ public class Steuereinheit
 	{
 		uiAdapter.onDeviceConnected();
 
-		connectionEstablished = true;
+		connectionState.setConnectionEstablished(true);
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class Steuereinheit
 	{
 		uiAdapter.onDisconnect();
 
-		connectionEstablished = false;
+		connectionState.setConnectionEstablished(false);
 	}
 
 	public NetworkAdapter getNetworkAdapter()
@@ -106,8 +107,8 @@ public class Steuereinheit
 		return uiAdapter;
 	}
 
-	public boolean isConnectionEstablished()
+	public ConnectionState getConnectionState()
 	{
-		return connectionEstablished;
+		return connectionState;
 	}
 }

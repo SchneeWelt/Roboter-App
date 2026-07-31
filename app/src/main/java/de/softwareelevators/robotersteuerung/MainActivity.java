@@ -14,13 +14,6 @@ public class MainActivity extends AppCompatActivity
 	 * es beispielsweise möglich, den Nutzer um das Einschalten von Bluetooth zu bitten. */
 	public final ActivityLauncher<Intent, ActivityResult> activityLauncher = ActivityLauncher.registerActivityForResult(this);
 
-
-	/**
-	 * Verantwortlich für das Stuern des Roboters. Aktualisiert auch die GUI
-	 */
-	private Steuereinheit steuereinheit;
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -29,21 +22,16 @@ public class MainActivity extends AppCompatActivity
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		setContentView(R.layout.activity_main);
 
-		setup();
+		new Steuereinheit(this);
 	}
 
-	private void setup()
-	{
-		/* DeviceName könnte ich mir auch über ein Intent besorgen. Ich schreibe eine
+	/* DeviceName könnte ich mir auch über ein Intent besorgen. Ich schreibe eine
 		zweite Klasse, die von Activity erbt und starte diese dann über ein Intent bei
 		Start dieser Anwendung.
 		Auf diesem Overlay wird nach dem Gerätenamen des Gerätes gefragt, mit dem
 		sich diese Anwendung verbinden soll. Oben links in der Anwendung könnte ein
 		quardratischer Button zu sehen sein, mit dem dieses Intent erneut geöffnet wird
 		und somit das Verbinden zu einem anderen Gerät möglich ist. */
-
-		steuereinheit = new Steuereinheit(this);
-	}
 
 	// --
 

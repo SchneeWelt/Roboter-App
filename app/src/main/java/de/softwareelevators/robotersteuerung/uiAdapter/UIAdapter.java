@@ -3,7 +3,6 @@ package de.softwareelevators.robotersteuerung.uiAdapter;
 
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.steuerung.Steuereinheit;
 
@@ -31,7 +30,7 @@ public class UIAdapter implements Joystick.JoystickListener
 		this.steuereinheit = steuereinheit;
 
 		uiElemente = new UIElemente(steuereinheit, mainActivity);
-		uiElemente.initElements();
+		uiElemente.initButtons();
 
 //		steuereinheit.getNetworkAdapter();
 	}
@@ -45,7 +44,7 @@ public class UIAdapter implements Joystick.JoystickListener
 
 		updateInfoDisplay(lenkwinkel, fahrgeschwindigkeit);
 
-		if (steuereinheit.isConnectionEstablished())
+		if (steuereinheit.getConnectionState().isConnectionEstablished())
 			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
 	}
 
@@ -123,5 +122,10 @@ public class UIAdapter implements Joystick.JoystickListener
 		if (lenkwinkel < -180) lenkwinkel += 360;
 
 		return lenkwinkel;
+	}
+
+	private float fahrgeschwindigkeitBerechnen(float xPercent, float yPercent)
+	{
+		return (float) Math.sqrt(xPercent * xPercent + yPercent * yPercent);
 	}
 }

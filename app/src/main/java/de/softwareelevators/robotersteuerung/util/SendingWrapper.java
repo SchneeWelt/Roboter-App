@@ -4,14 +4,14 @@ package de.softwareelevators.robotersteuerung.util;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 
 /**
- * Kapselt Methoden, die zum Senden der BT Daten an den Roboter
+ * Kapselt Methoden, die zum Senden der Daten an den Roboter
  * benötigt werden.
  */
-public class BtSender
+public class SendingWrapper
 {
 	private NetworkAdapter networkAdapter;
 
-	public BtSender(NetworkAdapter networkAdapter)
+	public SendingWrapper(NetworkAdapter networkAdapter)
 	{
 		this.networkAdapter = networkAdapter;
 	}

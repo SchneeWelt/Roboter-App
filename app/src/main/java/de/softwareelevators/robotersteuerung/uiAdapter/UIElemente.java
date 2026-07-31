@@ -2,7 +2,6 @@ package de.softwareelevators.robotersteuerung.uiAdapter;
 
 
 import android.widget.Button;
-import android.widget.TextView;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
@@ -34,10 +33,7 @@ public class UIElemente
         connectionStateDisplay = mainActivity.findViewById(R.id.verbindungsstatus);
     }
 
-    /**
-     * Setzt alle Elemente auf deren vorgesehenen Anfangszustand
-     */
-    public void initElements()
+    public void initButtons()
     {
         connectButton.setOnClickListener((view) -> steuereinheit.getNetworkAdapter().connect());
     }
