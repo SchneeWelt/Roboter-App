@@ -10,9 +10,9 @@ import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
 import de.softwareelevators.robotersteuerung.uiWidgets.SteeringDataDisplay;
 
 /**
- * Ein Wrapper, der zunächst alle verwendeten UIElemente über die jeweilige
+ * Ein Wrapper, der zunächst alle verwendeten UI Elemente über die jeweilige
  * ID der Elemente findet, sie als Referenz speichert und anschließend
- * für den UIAdapter nutzbar macht
+ * für den {@link UIAdapter} nutzbar macht
  */
 public class UIElemente
 {
@@ -41,5 +41,15 @@ public class UIElemente
     public SteeringDataDisplay getSteeringDataDisplay()
     {
         return steeringDataDisplay;
+    }
+
+    public ConnectionStateDisplay getConnectionStateDisplay()
+    {
+        return connectionStateDisplay;
+    }
+
+    public Button getConnectButton()
+    {
+        return connectButton;
     }
 }

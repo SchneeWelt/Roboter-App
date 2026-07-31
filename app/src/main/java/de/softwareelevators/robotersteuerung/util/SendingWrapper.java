@@ -4,8 +4,9 @@ package de.softwareelevators.robotersteuerung.util;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 
 /**
- * Kapselt Methoden, die zum Senden der Daten an den Roboter
- * benötigt werden.
+ * Kapselt Methoden, die zum Senden der Daten an das verbundene
+ * Gerät (den Roboter) verwendet werden. Wird vom {@link Sendebegrenzer}
+ * verwendet, um Daten an das verbundene Gerät zu senden
  */
 public class SendingWrapper
 {
@@ -15,7 +16,6 @@ public class SendingWrapper
 	{
 		this.networkAdapter = networkAdapter;
 	}
-
 
 	/**
 	 *

@@ -55,15 +55,15 @@ public class BluetoothAdapter extends NetworkAdapter
 
 	private MainActivity mainActivity;
 
-	private NetworConnectionStateListener networConnectionStateListener;
+	private NetworkConnectionStateListener networkConnectionStateListener;
 	private DataReceivedListener dataReceivedListener;
 
 
-	public BluetoothAdapter(String deviceName, DataReceivedListener dataReceivedListener, NetworConnectionStateListener networConnectionStateListener, MainActivity mainActivity)
+	public BluetoothAdapter(String deviceName, DataReceivedListener dataReceivedListener, NetworkConnectionStateListener networkConnectionStateListener, MainActivity mainActivity)
 	{
 		this.deviceName = deviceName;
 		this.mainActivity = mainActivity;
-		this.networConnectionStateListener = networConnectionStateListener;
+		this.networkConnectionStateListener = networkConnectionStateListener;
 		this.dataReceivedListener = dataReceivedListener;
 	}
 
@@ -220,7 +220,7 @@ public class BluetoothAdapter extends NetworkAdapter
 
 					mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
 
-					networConnectionStateListener.onConnect(connectedDevice);
+					networkConnectionStateListener.onConnect(connectedDevice);
 				} catch (Exception e)
 				{
 					Ausgabe.print("Verbindungsaufbau fehlgeschlagen: " + e.getMessage());
@@ -239,7 +239,7 @@ public class BluetoothAdapter extends NetworkAdapter
 		{
 			bluetoothSocket.close();
 
-			networConnectionStateListener.onDisconnect();
+			networkConnectionStateListener.onDisconnect();
 
 			mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung getrennt", Toast.LENGTH_SHORT).show());
 		} catch (Exception e)

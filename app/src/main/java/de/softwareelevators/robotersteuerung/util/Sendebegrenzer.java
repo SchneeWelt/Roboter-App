@@ -14,10 +14,10 @@ import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
  * Das Pattern puffert wohl auch Daten, die zwar schon
  * existieren, aber wegen der zeitlichen Limitierung
  * noch nicht gesendet werden können. Mache ich hier nicht.
- * Man würde aber wohl eine Queu verwenden.
+ * Mann würde aber wohl eine Queu verwenden.
  * <p>
- * Verwendet den NetworkAdapter, um Daten an das jeweils
- * verbundene Gerät (den Roboter) zu senden
+ * Verwendet einen {@link NetworkAdapter}, um Daten an das jeweils
+ * verbundene Gerät (den Roboter) zu senden.
  */
 public class Sendebegrenzer
 {
@@ -40,7 +40,6 @@ public class Sendebegrenzer
 
 		handler = new Handler(Looper.getMainLooper());
 	}
-
 
 	/**
 	 * Startet den Sendevorgang und wiederhohlt ihn dann im gesetzten
@@ -71,7 +70,9 @@ public class Sendebegrenzer
 		this.fahrgeschwindigkeit = fahrgeschwindigkeit;
 	}
 
-	/** Hier wird definiert, wie die Daten an den Roboter gesendet werden sollen */
+	/**
+	 * Hier werden die Daten an das Verbundene Gerät (den Roboter) gesendet
+	 */
 	private void sendTask()
 	{
 		/* Wertänderung seit letzem Send ermitteln */

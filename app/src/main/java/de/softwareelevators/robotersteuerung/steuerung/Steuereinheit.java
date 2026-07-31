@@ -36,10 +36,6 @@ public class Steuereinheit
 		/* UI Handler initialisieren */
 		uiAdapter = new UIAdapter(this, mainActivity);
 
-		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
-//		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
-//		sendebegrenzer.start();
-
 		connectionState = new ConnectionState();
 	}
 
@@ -64,38 +60,6 @@ public class Steuereinheit
 //		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
 //		sendebegrenzer.start();
 //	}
-
-	@Override
-	public void onSliderMoved(float sliderPositionPercent)
-	{
-		/* Wertebereich: [0; 100] */
-		float fahrgeschwindigkeit = sliderPositionPercent * 100;
-
-		uiAdapter.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
-		sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
-	}
-
-	@Override
-	public void onDataReceived(String data)
-	{
-		/* Wird aufgerufen, wenn über den BluetoothController - also vom Roboter - Daten empfangen wurden */
-	}
-
-	@Override
-	public void onConnect(BluetoothDevice connectedDevice)
-	{
-		uiAdapter.onDeviceConnected();
-
-		connectionState.setConnectionEstablished(true);
-	}
-
-	@Override
-	public void onDisconnect()
-	{
-		uiAdapter.onDisconnect();
-
-		connectionState.setConnectionEstablished(false);
-	}
 
 	public NetworkAdapter getNetworkAdapter()
 	{

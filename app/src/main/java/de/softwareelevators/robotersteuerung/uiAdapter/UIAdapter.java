@@ -1,16 +1,21 @@
 package de.softwareelevators.robotersteuerung.uiAdapter;
 
 
+import android.bluetooth.BluetoothDevice;
+import android.widget.Button;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkConnectionStateListener;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.steuerung.Steuereinheit;
+import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
+import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 
 /**
  * Ein Adapter für alle UI Elemente der App. Die Elemente existieren hier als
  * Objekte und dessen Daten werden hier verarbeitet
  */
-public class UIAdapter implements Joystick.JoystickListener
+public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionStateListener
 {
 //	private float lenkwinkel, fahrgeschwindigkeit;
 
@@ -19,6 +24,7 @@ public class UIAdapter implements Joystick.JoystickListener
 
 	private final UIElemente uiElemente;
 
+	private final Sendebegrenzer sendebegrenzer;
 
 	/**
 	 * @param steuereinheit
@@ -32,7 +38,14 @@ public class UIAdapter implements Joystick.JoystickListener
 		uiElemente = new UIElemente(steuereinheit, mainActivity);
 		uiElemente.initButtons();
 
-//		steuereinheit.getNetworkAdapter();
+		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
+		sendebegrenzer = new Sendebegrenzer(steuereinheit.getNetworkAdapter());
+
+
+		// sendebegrenzer start darf eigentlich erst augerufen werden, sobald
+		// das erste mal im connectionState objekt der established state auf
+		// true gesetzt wird
+		sendebegrenzer.start();
 	}
 
 	@Override
@@ -42,42 +55,43 @@ public class UIAdapter implements Joystick.JoystickListener
 		float lenkwinkel = lenkwinkelBerechnen(xPercent, yPercent);
 		float fahrgeschwindigkeit = fahrgeschwindigkeitBerechnen(xPercent, yPercent);
 
-		updateInfoDisplay(lenkwinkel, fahrgeschwindigkeit);
+		updateSteeringDataDisplay(lenkwinkel, fahrgeschwindigkeit);
 
 		if (steuereinheit.getConnectionState().isConnectionEstablished())
+		{
 			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
+			sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
+		}
 	}
 
+
 	/**
-	 * Dieses Event wird geworfen, sobald sich ein Gerät mit diesem
-	 * System (Dieser App) verbindet.
-	 * <p>
-	 * Das Event wird dazu verwendet, die Widgets des UIAdapters
-	 * zu aktualisieren
+	 * Wird geworfen, wenn sich eine remote Gerät mit diesem Gerät,
+	 * dieser App verbunden hat
+	 *
+	 * @param connectedDevice
 	 */
-	public void onDeviceConnected()
+	@Override
+	public void onConnect(BluetoothDevice connectedDevice)
 	{
 		mainActivity.runOnUiThread(this::onConnect_ButtonUpdate);
 		mainActivity.runOnUiThread(this::onConnect_StatusUpdate);
+
+		steuereinheit.getConnectionState().setConnectionEstablished(true);
 	}
 
+	@Override
 	public void onDisconnect()
 	{
 		mainActivity.runOnUiThread(this::onDisconnect_ButtonUpdate);
 		mainActivity.runOnUiThread(this::onDisconnect_StatusUpdate);
+
+		steuereinheit.getConnectionState().setConnectionEstablished(false);
 	}
 
-	public void fahrgeschwindigkeitAktualisieren(float fahregeschwindigkeit)
-	{
-		this.fahrgeschwindigkeit = fahregeschwindigkeit;
-
-		updateInfoDisplay(lenkwinkel, fahrgeschwindigkeit);
-	}
-
-	private void updateInfoDisplay(float lenkwinkel, float fahrgeschwindigkeit)
+	private void updateSteeringDataDisplay(float lenkwinkel, float fahrgeschwindigkeit)
 	{
 		String info = String.format("Fahrgeschwindigkeit: %.2f%%\nLenkwinkel: %.2f°", fahrgeschwindigkeit, lenkwinkel);
-
 		uiElemente.getSteeringDataDisplay().setText(info);
 	}
 
@@ -85,18 +99,24 @@ public class UIAdapter implements Joystick.JoystickListener
 
 	private void onDisconnect_ButtonUpdate()
 	{
+		Button connectButton = uiElemente.getConnectButton();
+
 		connectButton.setText(R.string.verbinden);
-		connectButton.setOnClickListener((view) -> networkAdapter.connect());
+		connectButton.setOnClickListener((view) -> steuereinheit.getNetworkAdapter().connect());
 	}
 
 	private void onDisconnect_StatusUpdate()
 	{
-		verbindungsstatusdisplay.setTextColor(GRAU);
-		verbindungsstatusdisplay.setText(R.string.nicht_verbunden);
+		uiElemente.getConnectionStateDisplay().onDisconnect();
 	}
 
 	private void onConnect_ButtonUpdate()
 	{
+		Button connectButton = uiElemente.getConnectButton();
+		connectButton.onConnect();
+
+		auch button braucht eigene klasse
+
 		connectButton.setText(R.string.verbindung_trennen);
 		connectButton.setOnClickListener((view) -> networkAdapter.disconnect());
 	}

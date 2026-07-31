@@ -11,6 +11,8 @@ import de.softwareelevators.robotersteuerung.R;
  */
 public class ConnectionStateDisplay extends androidx.appcompat.widget.AppCompatTextView
 {
+    private Context context;
+
     public ConnectionStateDisplay(Context context)
     {
         super(context);
@@ -34,8 +36,12 @@ public class ConnectionStateDisplay extends androidx.appcompat.widget.AppCompatT
 
     private void setup(Context context)
     {
-        setText(R.string.nicht_verbunden);
+        onDisconnect();
+    }
 
+    public void onDisconnect()
+    {
+        setText(R.string.nicht_verbunden);
         setTextColor(ContextCompat.getColor(context, R.color.grau));
     }
 }
