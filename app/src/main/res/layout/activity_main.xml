@@ -10,6 +10,30 @@
 		android:background="#000000"
 >
 
+	<ToggleButton
+			android:id="@+id/mode_switcher"
+
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+
+			android:textOn="W-Lan"
+			android:textOff="Bluetooth"
+
+			android:checked="false"
+
+			android:backgroundTint="@color/orange"
+			android:textColor="@color/black"
+
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+
+			app:layout_constraintHorizontal_bias="0.98"
+			app:layout_constraintVertical_bias="0.04"
+	/>
+
+
 	<de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay
 			android:text="Not Connected..."
 			android:layout_width="wrap_content"
@@ -18,7 +42,8 @@
 			android:id="@+id/verbindungsstatus"
 			app:layout_constraintBottom_toBottomOf="parent"
 			android:gravity="center_horizontal"
-			app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintHorizontal_bias="0.5"
 			app:layout_constraintVertical_bias="0.045"
@@ -38,8 +63,8 @@
 			app:layout_constraintWidth_percent="0.25"
 			app:layout_constraintDimensionRatio="1:1"
 
-			app:layout_constraintHorizontal_bias="0.95"
-			app:layout_constraintVertical_bias="0.90"
+			app:layout_constraintHorizontal_bias="0.05"
+			app:layout_constraintVertical_bias="0.95"
 	/>
 
 <!--	<de.softwareelevators.robotersteuerung.steuerung.VertikalerRegler-->
@@ -61,11 +86,14 @@
 
 	<Button
 			android:text="Connect"
+
 			android:id="@+id/connect_button"
+
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:backgroundTint="@color/violett"
-			android:textColor="@color/grau"
+
+			android:backgroundTint="@color/orange"
+			android:textColor="@color/black"
 
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
@@ -75,16 +103,21 @@
 			app:layout_constraintHorizontal_bias="0.965"
 			app:layout_constraintVertical_bias="0.38"/>
 
-	<de.softwareelevators.robotersteuerung.uiWidgets.SteeringDataDisplay
+	<de.softwareelevators.robotersteuerung.uiWidgets.DataDisplay
+
 			android:text="Fahrgeschwindigkeit: 80%\nLenkwinkel: 12°"
+
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+
 			android:textColor="@color/grau"
 			android:id="@+id/steuerdaten_display"
+
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
+
 			app:layout_constraintHorizontal_bias="0.035"
 			app:layout_constraintVertical_bias="0.045"
 	/>

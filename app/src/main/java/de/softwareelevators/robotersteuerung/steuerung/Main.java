@@ -1,10 +1,12 @@
 package de.softwareelevators.robotersteuerung.steuerung;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothAdapter;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter;
-import de.softwareelevators.robotersteuerung.util.ConnectionStateStorage;
 
 
 /**
@@ -17,7 +19,10 @@ public class Main
 {
 	private MainActivity mainActivity;
 	private final UIAdapter uiAdapter;
-	private final NetworkAdapter networkAdapter;
+
+	/** Der derzeit aktive Network Adapter. Kann durch die UI vom {@link UIAdapter}
+	 * getausch werden */
+	private NetworkAdapter networkAdapter;
 
 
 //	private final ConnectionStateStorage connectionStateStorage;
@@ -30,10 +35,11 @@ public class Main
 	{
 		this.mainActivity = mainActivity;
 
+
 		/* Netzwerkcontroller einrichten */
 //		networkAdapter = new WLanAdapter();
 		// Über dieses Objekt läuft die Kommunikatino zum Roboter
-		networkAdapter = new BluetoothAdapter("ESP32", mainActivity);;
+		networkAdapter = new BluetoothAdapter(this);
 
 //		die app sollte für bt jetzt endlich wieder funktionieren! -> testen!
 
@@ -44,6 +50,39 @@ public class Main
 
 		// Hierrüber kann der UI Adapter erkennen, ob eine Verbindung zu einem Remote Gerät besteht
 //		connectionStateStorage = new ConnectionStateStorage();
+
+		/* Nach allen möglichen Runtime permissions fragen. Der Trick: Wird eine Permmission einmal
+		erlaubt, so merkt sich das die App und solange diese dann nicht neu gestartet order zurückgesetzt
+		wird, muss nie wieder diese Permission neu eingeholt werden. Heißt der nachfolgende Teil nervt einmal
+		und dann nie wieder */
+
+		hohleBtConnectBerechtigung();
+	}
+
+	/**
+	 * Nach der Berechtigungsanfrage vergeht noch etwas zeit, bis die berechtigung erteilt wurde. Man kann
+	 * da dann mit callbacks drauf reagieren, sollte aber in jedemfall erstmal mit return aus dem aktuellen
+	 * Programmablauf rausspringen
+	 *
+	 * @return true, wenn die berechtigung geholt werden musste und der weitere Programmablauf daher
+	 * gestoppt werden sollte
+	 */
+	public boolean hohleBtConnectBerechtigung()
+	{
+		// Auch das Intent braucht eine Erlaubnis geöffnet zu werden...
+		if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.BLUETOOTH_CONNECT)	!= PackageManager.PERMISSION_GRANTED)
+		{
+			ActivityCompat.requestPermissions(
+					mainActivity,
+					new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+					1001
+			);
+
+			return true; // WICHTIG: Intent erst starten, wenn Permission da ist. Deshalb hier "warten" -> zweiter Methodenaufruf erforderlich
+			// möglich durch erneutes anklicken des connect buttons?
+		}
+
+		return false;
 	}
 
 
@@ -81,5 +120,10 @@ public class Main
 	public MainActivity getMainActivity()
 	{
 		return mainActivity;
+	}
+
+	public void setNetworkAdapter(NetworkAdapter networkAdapter)
+	{
+		this.networkAdapter = networkAdapter;
 	}
 }

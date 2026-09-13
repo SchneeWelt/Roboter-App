@@ -1,13 +1,16 @@
 package de.softwareelevators.robotersteuerung.uiAdapter;
 
 
-import android.widget.Button;
+import android.widget.*;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
+import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothAdapter;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
+import de.softwareelevators.robotersteuerung.networkAdapter.WLanAdapter;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.steuerung.Main;
 import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
-import de.softwareelevators.robotersteuerung.uiWidgets.SteeringDataDisplay;
+import de.softwareelevators.robotersteuerung.uiWidgets.DataDisplay;
 
 /**
  * Ein Wrapper, der zunächst alle verwendeten UI Elemente über die jeweilige
@@ -16,32 +19,61 @@ import de.softwareelevators.robotersteuerung.uiWidgets.SteeringDataDisplay;
  */
 public class UIElemente
 {
-    private Joystick.JoystickListener joystickListener;
-
+    private Main main;
     private Joystick joystick;
+    private UIAdapter uiAdapter;
     private Button connectButton;
-    private SteeringDataDisplay steeringDataDisplay; //steuerdaten2stuerdatendisplay;
+    private ToggleButton toggleButton;
+    private DataDisplay dataDisplay; //steuerdaten2stuerdatendisplay;
     private ConnectionStateDisplay connectionStateDisplay;
 
-    private Main main;
 
-    public UIElemente(Main main, MainActivity mainActivity, Joystick.JoystickListener joystickListener)
+    public UIElemente(Main main, UIAdapter uiAdapter)
     {
         this.main = main;
+        this.uiAdapter = uiAdapter;
+
+        MainActivity mainActivity = main.getMainActivity();
 
         joystick = mainActivity.findViewById(R.id.joystick);
         connectButton = mainActivity.findViewById(R.id.connect_button);
-        steeringDataDisplay = mainActivity.findViewById(R.id.steuerdaten_display);
+        dataDisplay = mainActivity.findViewById(R.id.steuerdaten_display);
         connectionStateDisplay = mainActivity.findViewById(R.id.verbindungsstatus);
+
+        toggleButton = mainActivity.findViewById(R.id.mode_switcher);
+        toggleButton.setOnCheckedChangeListener(this::onToggle);
 
         connectButton.setOnClickListener((view) -> main.getNetworkAdapter().connect());
 
-        joystick.setJoystickListener(joystickListener);
+        joystick.setJoystickListener(uiAdapter);
     }
 
-    public SteeringDataDisplay getSteeringDataDisplay()
+    private void onToggle(CompoundButton b, boolean a)
     {
-        return steeringDataDisplay;
+        NetworkAdapter newAdapter = null;
+
+        if (a)  // W-Lan Modus aktivieren
+        {
+            newAdapter = new WLanAdapter();
+
+            uiAdapter.onAdapterChanged(newAdapter);
+
+            Toast.makeText(main.getMainActivity(), "W-Lanmodus aktiviert", Toast.LENGTH_SHORT).show();
+        } else // Bluetoothmodus aktivieren
+        {
+            newAdapter = new BluetoothAdapter(main.getMainActivity());
+
+            uiAdapter.onAdapterChanged(newAdapter);
+
+            Toast.makeText(main.getMainActivity(), "Bluetoothmodus aktiviert", Toast.LENGTH_SHORT).show();
+        }
+
+        main.setNetworkAdapter(newAdapter);
+    }
+
+    public DataDisplay getSteeringDataDisplay()
+    {
+        return dataDisplay;
     }
 
     public ConnectionStateDisplay getConnectionStateDisplay()

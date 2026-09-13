@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.core.app.ActivityCompat;
 import de.softwareelevators.robotersteuerung.MainActivity;
+import de.softwareelevators.robotersteuerung.steuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
 import de.softwareelevators.robotersteuerung.util.BtPermissionChecker;
 
@@ -23,6 +24,8 @@ import java.util.UUID;
  */
 public class BluetoothAdapter extends NetworkAdapter
 {
+	private Main main;
+
 	/**
 	* Der name von dem BT Classic Gerät, mit dem sich dises
 	* Gerät verbinden soll. Das Zielgerät muss für einen
@@ -53,13 +56,12 @@ public class BluetoothAdapter extends NetworkAdapter
 	private BluetoothSocket bluetoothSocket;
 
 
-	private MainActivity mainActivity;
-
-
-	public BluetoothAdapter(String deviceName, MainActivity mainActivity)
+	public BluetoothAdapter(Main main)
 	{
-        this.deviceName = deviceName;
-		this.mainActivity = mainActivity;
+		this.main = main;
+//        this.deviceName = deviceName;
+
+		deviceName = "ESP32";
 	}
 
 	@Override
@@ -80,6 +82,8 @@ public class BluetoothAdapter extends NetworkAdapter
 	{
 		super.connect();
 
+		MainActivity mainActivity = main.getMainActivity();
+
 		Ausgabe.print("Starte Verbindungsaufbau zu Zielgerät mit Namen: " + deviceName);
 
 		BluetoothManager bluetoothManager = mainActivity.getSystemService(BluetoothManager.class);
@@ -98,6 +102,10 @@ public class BluetoothAdapter extends NetworkAdapter
 		/* Was soll passieren, wenn BT nicht eingeschaltet ist: */
 		if (!bluetoothAdapter.isEnabled())
 		{
+			// Auch das Intent braucht eine Erlaubnis geöffnet zu werden...
+			if (main.hohleBtConnectBerechtigung())
+				return;
+
 			/* Eine andere Anwendung starten - hier die Bluetooth Anwendung des Handys,
 			um den Nutzer aufzufordern Bluetooth einzuschalten. Das Ergebnis seiner Aktion
 			wird in einem Callback über den Result Code ausgegeben. */
@@ -118,6 +126,8 @@ public class BluetoothAdapter extends NetworkAdapter
 	 */
 	private void handleEnableBtResult(ActivityResult result)
 	{
+		MainActivity mainActivity = main.getMainActivity();
+
 		int resultCode = result.getResultCode();
 
 		if (resultCode == Activity.RESULT_OK)
@@ -141,6 +151,9 @@ public class BluetoothAdapter extends NetworkAdapter
 	 */
 	private void zielgerätFinden()
 	{
+		MainActivity mainActivity = main.getMainActivity();
+
+
 		/* Über alle gekoppelten Geräte iterieren. Wenn dort der im
 		Feld deviceName gespeicherte Name vorkommt: Lese die MAC Adresse
 		von diesem Gerät aus und verbinde mit diesem Gerät */
@@ -151,6 +164,8 @@ public class BluetoothAdapter extends NetworkAdapter
 			BtPermissionChecker.requestBluetoothPermission(mainActivity);
 			return;
 		}
+
+		alle berechtigungen im ablauf in main auslagern, public methode dazu, wie bereits vorhanden bei anderer
 
 		/* Alle gekoppelten BT Geräte vom Betriebssystem holen */
 		Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
@@ -195,6 +210,8 @@ public class BluetoothAdapter extends NetworkAdapter
 	 */
 	private void connectToTargetDevice(BluetoothDevice targetDevice)
 	{
+		MainActivity mainActivity = main.getMainActivity();
+
 		/* Diese UUID gibt dem Zielgerät zu verstehen, dass es über das Serial Port
 		Profile - also über die Serielle Schnittstelle - mit diesem Gerät kommunizieren
 		soll. */
@@ -255,6 +272,8 @@ public class BluetoothAdapter extends NetworkAdapter
 		try
 		{
 			bluetoothSocket.close();
+
+			MainActivity mainActivity = main.getMainActivity();
 
 			mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung getrennt", Toast.LENGTH_SHORT).show());
 		} catch (Exception e)

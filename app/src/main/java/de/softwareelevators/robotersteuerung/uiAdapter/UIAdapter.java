@@ -3,6 +3,9 @@ package de.softwareelevators.robotersteuerung.uiAdapter;
 
 import android.bluetooth.BluetoothDevice;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
+import androidx.annotation.NonNull;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
 import de.softwareelevators.robotersteuerung.networkAdapter.DataReceivedListener;
@@ -31,23 +34,25 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 	public UIAdapter(Main main, NetworkAdapter networkAdapter)
 	{
 		this.main = main;
+		this.networkAdapter = networkAdapter;
 
-		uiElemente = new UIElemente(main, main.getMainActivity(), this);
+		uiElemente = new UIElemente(main, this);
 
 		onAdapterChanged(networkAdapter);
 	}
 
 	/**
+	 * Wird immer dann geworfen, wenn der aktive {@link NetworkAdapter} durch das
+	 * UI gewechselt wurde. Das kommt dem Umstellen von Bluetooth auf W-Lan bzw von
+	 * W-Lan auf Bluetooth gleich
+	 *
 	 * @param networkAdapter Der neue Adapter
 	 */
 	public void onAdapterChanged(NetworkAdapter networkAdapter)
 	{
-		// Es soll über die UI möglich sein, den aktiven network adapter zu tauschen
-		// In diesem fall muss neu verkabelt werden, was hier passieren soll
-
-		rufe methode über neues ui element auf. Einen toggle button will ich haben.
-		dieser neue button muss vor diesem aufruf einen networkAdapter.disconnect();
-		befehl ausführen
+//		rufe methode über neues ui element auf. Einen toggle button will ich haben.
+//		dieser neue button muss vor diesem aufruf einen networkAdapter.disconnect();
+//		befehl ausführen
 
 		if (sendebegrenzer != null)
 			sendebegrenzer.stop();
@@ -114,8 +119,7 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 	{
 		// Wäre eigentlich cooler, würde die text aktualisierung auch event basiert laufen
 
-		String info = String.format("Fahrgeschwindigkeit: %.2f%%\nLenkwinkel: %.2f°", fahrgeschwindigkeit, lenkwinkel);
-		uiElemente.getSteeringDataDisplay().setText(info);
+		uiElemente.getSteeringDataDisplay().updateContent(lenkwinkel, fahrgeschwindigkeit);
 	}
 
 	private void onDisconnect_ButtonUpdate()

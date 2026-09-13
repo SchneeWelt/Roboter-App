@@ -36,6 +36,8 @@ public class ConnectionStateDisplay extends androidx.appcompat.widget.AppCompatT
 
     private void setup(Context context)
     {
+        this.context = context;
+
         onDisconnect();
     }
 
