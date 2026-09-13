@@ -61,7 +61,7 @@ public class UIElemente
             Toast.makeText(main.getMainActivity(), "W-Lanmodus aktiviert", Toast.LENGTH_SHORT).show();
         } else // Bluetoothmodus aktivieren
         {
-            newAdapter = new BluetoothAdapter(main.getMainActivity());
+            newAdapter = new BluetoothAdapter(main);
 
             uiAdapter.onAdapterChanged(newAdapter);
 

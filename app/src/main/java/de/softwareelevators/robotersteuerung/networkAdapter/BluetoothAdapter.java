@@ -1,6 +1,7 @@
 package de.softwareelevators.robotersteuerung.networkAdapter;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.*;
 import android.content.Intent;
@@ -149,7 +150,8 @@ public class BluetoothAdapter extends NetworkAdapter
 	 * Im nächsten Schritt wird jetzt das Zielgerät gesucht und gefunden zu dem diese Klasse
 	 * eine Verbindung aufbauen soll.
 	 */
-	private void zielgerätFinden()
+	@SuppressLint("MissingPermission")
+    private void zielgerätFinden()
 	{
 		MainActivity mainActivity = main.getMainActivity();
 
@@ -159,19 +161,18 @@ public class BluetoothAdapter extends NetworkAdapter
 		von diesem Gerät aus und verbinde mit diesem Gerät */
 
 		/* Android schreibt an dieser Stelle das Überprüfen der Bluetooth Berechtigungen vor */
-		if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED)
-		{
-			BtPermissionChecker.requestBluetoothPermission(mainActivity);
+		if (main.hohleBtConnectBerechtigung() || main.hohleBtScanBerechtigung())
 			return;
-		}
-
-		alle berechtigungen im ablauf in main auslagern, public methode dazu, wie bereits vorhanden bei anderer
 
 		/* Alle gekoppelten BT Geräte vom Betriebssystem holen */
-		Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+		@SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 		if (pairedDevices == null || pairedDevices.isEmpty())
 		{
-			Ausgabe.print("Es sind keine Geräte gekoppelt, verbindungsaufbau fehlgeschlagen. Koppel bitte zunächst ein BT-Gerät mit diesem Gerät.");
+			Ausgabe.print("Es sind keine Geräte gekoppelt, verbindungsaufbau fehlgeschlagen. " +
+					"Koppel bitte zunächst ein BT-Gerät mit diesem Gerät");
+
+			Toast.makeText(mainActivity, "Keine gekoppelten Geräte gefunden! Bitte erst welche Koppeln. Abbruch..", Toast.LENGTH_SHORT).show();
+
 			return;
 		}
 
@@ -208,7 +209,8 @@ public class BluetoothAdapter extends NetworkAdapter
 	 *
 	 * @param targetDevice
 	 */
-	private void connectToTargetDevice(BluetoothDevice targetDevice)
+	@SuppressLint("MissingPermission")
+    private void connectToTargetDevice(BluetoothDevice targetDevice)
 	{
 		MainActivity mainActivity = main.getMainActivity();
 
@@ -223,12 +225,8 @@ public class BluetoothAdapter extends NetworkAdapter
 
 		/* Android schreibt an dieser Stelle das Überprüfen der Bluetooth Berechtigungen vor. Achtung:
 		* Überprüfungen müssen im Main Thread durchgeführt werden. */
-		if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ||
-				ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)
-		{
-			BtPermissionChecker.requestBluetoothPermission(mainActivity);
+		if (main.hohleBtScanBerechtigung() || main.hohleBtConnectBerechtigung())
 			return;
-		}
 
 		new Thread(() ->
 			{

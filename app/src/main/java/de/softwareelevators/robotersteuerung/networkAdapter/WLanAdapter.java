@@ -10,6 +10,49 @@ import java.nio.charset.StandardCharsets;
  * über WLan. Jeweils eine Verbindung pro App Instanz.
  * Anschließend ist die Datenübertragung zu dem verbundenen Gerät
  * möglich. */
+
+STA Modus im Roboter:
+/*
+	Der Roboter soll im STA Modus laufen. Heißt er kommuniziert über einen
+	Router mit meinem Handy. Aktuell läuft er im AP Modus, da ist er selbst
+	dann der Router, was extrem ineefizient ist und nur sehr geringe
+	reichweiten hat.
+	Hier der Code, den ich für den sta modus brauche:
+
+	#include <WiFi.h>
+
+const char* ssid = "DEIN_ROUTER_NAME";
+const char* password = "DEIN_ROUTER_PASSWORT";
+
+WiFiServer server(1234);
+
+void setup() {
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
+
+  server.begin();
+}
+
+void loop() {
+  WiFiClient client = server.available();
+  if (client) {
+    while (client.connected()) {
+      if (client.available()) {
+        String data = client.readString();
+        // verarbeite Daten
+      }
+    }
+  }
+}
+
+
+
+ */
+
+
 public class WLanAdapter extends NetworkAdapter
 {
 	private Socket socket;
@@ -17,7 +60,6 @@ public class WLanAdapter extends NetworkAdapter
 	public WLanAdapter()
 	{
     }
-
 
 	@Override
 	public void connect()
@@ -29,6 +71,33 @@ public class WLanAdapter extends NetworkAdapter
 		{
 			if (socket != null && !socket.isClosed())
 				disconnect();
+
+			ich sollte mich hier über mDNS verbinden. Dann muss ich die IP Adresse des EPS32 nicht kennen,
+			die müsste ich andernfalls ja herausfinden. Auf dieser seite:
+
+		socket = new Socket("esp32robot.local", 1234);
+
+			andere seite:
+
+			#include <ESPmDNS.h>
+
+			MDNS.begin("esp32robot");
+
+			falls das nicht funzt: IP Adresse über serial monitor ausgeben lassen oder:
+
+			Der klassische udp broadcast. Der ist am aufwändigsten zu implementieren. Hier ausschnitte:
+
+			esp 32
+			udp.beginPacket("255.255.255.255", 4210);
+			udp.print(WiFi.localIP());
+			udp.endPacket();
+
+			app
+			DatagramPacket packet = new DatagramPacket(buf, buf.length);
+			socket.receive(packet);
+			String espIp = new String(packet.getData());
+
+
 
 			socket = new Socket("192.168.4.1", 1234);
 		} catch (IOException e)

@@ -7,6 +7,10 @@ import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothAdapter;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter;
+import de.softwareelevators.robotersteuerung.util.BtPermissionChecker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -24,11 +28,6 @@ public class Main
 	 * getausch werden */
 	private NetworkAdapter networkAdapter;
 
-
-//	private final ConnectionStateStorage connectionStateStorage;
-
-
-//	private Sendebegrenzer sendebegrenzer;
 //	private VertikalerRegler geschwindigkeitsregler;
 
 	public Main(MainActivity mainActivity)
@@ -48,15 +47,52 @@ public class Main
 		// werden solle
 		uiAdapter = new UIAdapter(this, networkAdapter);
 
-		// Hierrüber kann der UI Adapter erkennen, ob eine Verbindung zu einem Remote Gerät besteht
-//		connectionStateStorage = new ConnectionStateStorage();
+
+
 
 		/* Nach allen möglichen Runtime permissions fragen. Der Trick: Wird eine Permmission einmal
 		erlaubt, so merkt sich das die App und solange diese dann nicht neu gestartet order zurückgesetzt
 		wird, muss nie wieder diese Permission neu eingeholt werden. Heißt der nachfolgende Teil nervt einmal
 		und dann nie wieder */
 
-		hohleBtConnectBerechtigung();
+		hohleBerechtigungen();
+	}
+
+	/**
+	 *
+	 * @return true, wenn keine Permission fehlte und der Programmablauf also nicht
+	 * neu gestartet werden musss
+	 */
+	public boolean hohleBerechtigungen()
+	{
+		String[] permissions =
+		{
+				Manifest.permission.BLUETOOTH_CONNECT,
+				Manifest.permission.BLUETOOTH_SCAN,
+				Manifest.permission.BLUETOOTH_ADVERTISE,
+//				Manifest.permission.NEARBY_WIFI_DEVICES
+		};
+
+		List<String> missing = new ArrayList<>();
+
+		for (String p : permissions)
+			if (ActivityCompat.checkSelfPermission(mainActivity, p)
+					!= PackageManager.PERMISSION_GRANTED) {
+				missing.add(p);
+			}
+
+		if (!missing.isEmpty())
+		{
+			ActivityCompat.requestPermissions(
+					mainActivity,
+					missing.toArray(new String[0]),
+					1001
+			);
+
+			return false; // Permission fehlt → warten
+		}
+
+		return true; // Alle Permissions vorhanden
 	}
 
 	/**
@@ -75,6 +111,24 @@ public class Main
 			ActivityCompat.requestPermissions(
 					mainActivity,
 					new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+					1001
+			);
+
+			return true; // WICHTIG: Intent erst starten, wenn Permission da ist. Deshalb hier "warten" -> zweiter Methodenaufruf erforderlich
+			// möglich durch erneutes anklicken des connect buttons?
+		}
+
+		return false;
+	}
+
+	public boolean hohleBtScanBerechtigung()
+	{
+		// Auch das Intent braucht eine Erlaubnis geöffnet zu werden...
+		if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)
+		{
+			ActivityCompat.requestPermissions(
+					mainActivity,
+					new String[]{Manifest.permission.BLUETOOTH_SCAN},
 					1001
 			);
 

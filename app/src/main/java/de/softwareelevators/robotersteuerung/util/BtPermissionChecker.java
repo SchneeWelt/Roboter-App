@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import de.softwareelevators.robotersteuerung.MainActivity;
 
+@Deprecated
 public class BtPermissionChecker
 {
 	/**
