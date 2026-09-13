@@ -58,7 +58,7 @@ public class BluetoothAdapter extends NetworkAdapter
 
 	public BluetoothAdapter(String deviceName, MainActivity mainActivity)
 	{
-		this.deviceName = deviceName;
+        this.deviceName = deviceName;
 		this.mainActivity = mainActivity;
 	}
 
@@ -67,7 +67,6 @@ public class BluetoothAdapter extends NetworkAdapter
 	{
 
 	}
-
 
 	/**
 	 * Dieser Befehl startet den Verbindungsaufbau zum Roboter.
@@ -79,6 +78,8 @@ public class BluetoothAdapter extends NetworkAdapter
 	 */
 	public void connect()
 	{
+		super.connect();
+
 		Ausgabe.print("Starte Verbindungsaufbau zu Zielgerät mit Namen: " + deviceName);
 
 		BluetoothManager bluetoothManager = mainActivity.getSystemService(BluetoothManager.class);
@@ -287,10 +288,5 @@ public class BluetoothAdapter extends NetworkAdapter
 		{
 			Ausgabe.print("Senden fehlgeschlagen: " + e.getMessage());
 		}
-	}
-
-	public boolean isConnected()
-	{
-		return bluetoothSocket != null && bluetoothSocket.isConnected();
 	}
 }

@@ -14,10 +14,16 @@ public class WLanAdapter extends NetworkAdapter
 {
 	private Socket socket;
 
+	public WLanAdapter()
+	{
+    }
+
 
 	@Override
 	public void connect()
 	{
+		super.connect();
+
 		/* Verbindung zum ESP32 herstellen - nur möglich, wenn Handy mit ESP32-WLan verbunden */
 		try
 		{
@@ -58,6 +64,8 @@ public class WLanAdapter extends NetworkAdapter
 	@Override
 	public void disconnect()
 	{
+		super.disconnect();
+
 		try
 		{
 			if (socket != null && !socket.isClosed())

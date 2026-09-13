@@ -20,7 +20,8 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 {
 	private final Main main;
 	private final UIElemente uiElemente;
-	private final Sendebegrenzer sendebegrenzer;
+	private Sendebegrenzer sendebegrenzer;
+	private NetworkAdapter networkAdapter;
 
 	/**
 	 * @param main
@@ -32,6 +33,24 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 		this.main = main;
 
 		uiElemente = new UIElemente(main, main.getMainActivity(), this);
+
+		onAdapterChanged(networkAdapter);
+	}
+
+	/**
+	 * @param networkAdapter Der neue Adapter
+	 */
+	public void onAdapterChanged(NetworkAdapter networkAdapter)
+	{
+		// Es soll über die UI möglich sein, den aktiven network adapter zu tauschen
+		// In diesem fall muss neu verkabelt werden, was hier passieren soll
+
+		rufe methode über neues ui element auf. Einen toggle button will ich haben.
+		dieser neue button muss vor diesem aufruf einen networkAdapter.disconnect();
+		befehl ausführen
+
+		if (sendebegrenzer != null)
+			sendebegrenzer.stop();
 
 		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
 		sendebegrenzer = new Sendebegrenzer(networkAdapter);
@@ -57,7 +76,7 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 
 		updateSteeringDataDisplay(lenkwinkel, fahrgeschwindigkeit);
 
-		if (main.getConnectionStateStorage().isConnectionEstablished())
+		if (networkAdapter.isConnected())
 		{
 			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
 			sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
@@ -77,8 +96,6 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 		main.getMainActivity().runOnUiThread(this::onConnect_ButtonUpdate);
 		main.getMainActivity().runOnUiThread(this::onConnect_StatusUpdate);
 
-		main.getConnectionStateStorage().setConnectionEstablished(true);
-
 		sendebegrenzer.start();
 	}
 
@@ -87,8 +104,6 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 	{
 		main.getMainActivity().runOnUiThread(this::onDisconnect_ButtonUpdate);
 		main.getMainActivity().runOnUiThread(this::onDisconnect_StatusUpdate);
-
-		main.getConnectionStateStorage().setConnectionEstablished(false);
 
 		sendebegrenzer.stop();
 	}

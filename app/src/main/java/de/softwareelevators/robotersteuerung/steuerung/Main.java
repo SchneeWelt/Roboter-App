@@ -20,7 +20,7 @@ public class Main
 	private final NetworkAdapter networkAdapter;
 
 
-	private final ConnectionStateStorage connectionStateStorage;
+//	private final ConnectionStateStorage connectionStateStorage;
 
 
 //	private Sendebegrenzer sendebegrenzer;
@@ -32,15 +32,18 @@ public class Main
 
 		/* Netzwerkcontroller einrichten */
 //		networkAdapter = new WLanAdapter();
+		// Über dieses Objekt läuft die Kommunikatino zum Roboter
 		networkAdapter = new BluetoothAdapter("ESP32", mainActivity);;
 
-		die app sollte für bt jetzt endlich wieder funktionieren! -> testen!
+//		die app sollte für bt jetzt endlich wieder funktionieren! -> testen!
 
-		// Steuerung initialisieren
+		// Dieses Objekt verwendet das obere Objekt, um Daten an den Roboter
+		// zu senden. Dafür ermöglicht es die spezifikation dazu, was gesendet
+		// werden solle
 		uiAdapter = new UIAdapter(this, networkAdapter);
 
 		// Hierrüber kann der UI Adapter erkennen, ob eine Verbindung zu einem Remote Gerät besteht
-		connectionStateStorage = new ConnectionStateStorage();
+//		connectionStateStorage = new ConnectionStateStorage();
 	}
 
 
@@ -70,10 +73,10 @@ public class Main
 		return networkAdapter;
 	}
 
-	public ConnectionStateStorage getConnectionStateStorage()
-	{
-		return connectionStateStorage;
-	}
+//	public ConnectionStateStorage getConnectionStateStorage()
+//	{
+//		return connectionStateStorage;
+//	}
 
 	public MainActivity getMainActivity()
 	{

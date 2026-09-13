@@ -2,6 +2,8 @@ package de.softwareelevators.robotersteuerung.networkAdapter;
 
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
+import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
+import de.softwareelevators.robotersteuerung.util.ConnectionStateStorage;
 
 
 /**
@@ -11,9 +13,16 @@ import android.bluetooth.BluetoothDevice;
  */
 public abstract class NetworkAdapter
 {
+	/** Gibt an, ob diese Klasse mit einem Remote Gerät verbunden ist */
+	private ConnectionState connectionState;
 	private DataReceivedListener dataReceivedListener;
 	private NetworkConnectionStateListener networkConnectionStateListener;
 
+
+	public NetworkAdapter()
+	{
+		connectionState = ConnectionState.NOT_CONNECTED;
+	}
 
 	/**
 	 * Veranlasst dieses Objekt dazu Daten an das remote Gerät (den
@@ -45,13 +54,20 @@ public abstract class NetworkAdapter
 	 */
 	public void onConnectionEstablished(BluetoothDevice connectedDevice)
 	{
+		connectionState = ConnectionState.CONNECTED;
+
 		networkConnectionStateListener.onConnect(connectedDevice);
 	}
 
 
 	/**
 	 * Veranlasst dieses Objekt dazu eine Verbindung zu einem Remote
-	 * Gerät (dem Roboter) auzubauen.
+	 * Gerät (dem Roboter) auzubauen. Achtung: Nach diesem Befehl ist
+	 * nicht unbedingt auch eine Verbindung aufgebaut. Es wird eben nur
+	 * der Verbindungsaufbau versucht. Er kann aber nicht garantiert
+	 * werden. Sollte eine Verbindung aufgebaut worden sein können,
+	 * so wird {@link #onConnectionEstablished(BluetoothDevice)}
+	 * geworfen.
 	 */
 	public void connect()
 	{
@@ -64,6 +80,8 @@ public abstract class NetworkAdapter
 	 */
 	public void disconnect()
 	{
+		connectionState = ConnectionState.NOT_CONNECTED;
+
 		networkConnectionStateListener.onDisconnect();
 	}
 
@@ -82,5 +100,10 @@ public abstract class NetworkAdapter
 	public void setDataReceivedListener(DataReceivedListener dataReceivedListener)
 	{
 		this.dataReceivedListener = dataReceivedListener;
+	}
+
+	public boolean isConnected()
+	{
+		return connectionState.equals(ConnectionState.CONNECTED);
 	}
 }

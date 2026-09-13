@@ -7,7 +7,11 @@ package de.softwareelevators.robotersteuerung.util;
  * und wird sowohl von {@link de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter}
  * Instanzen verwendet, als auch von der {@link de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter}
  * Klasse.
+ *
+ * wird jetzt in {@link de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter} direkt
+ * gemacht. Muss also nicht mehr über eine externe klasse gespeichert werden
  */
+@Deprecated
 public class ConnectionStateStorage
 {
     private boolean connectionEstablished;
