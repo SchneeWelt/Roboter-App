@@ -1,17 +1,18 @@
 package de.softwareelevators.robotersteuerung.networkAdapter;
 
+
+/** Ermöglicht eine Reaktion externer Klassen auf den Erhalt von Daten von
+ * einem Remote Gerät (dem Roboter) zu reagieren. Das Wort extern bedeutet
+ * Klassen, die nicht vom Type: {@link NetworkAdapter} sind
+ */
 public interface DataReceivedListener
 {
     /**
-     * Wird immer dann geworfen, wenn Daten von einem verbundenen Gerät
-     * empfangen wurden. Dieses Event dient dann der Verarbeitung dieser
-     * Daten.
-     * <p>
-     * Speziell beim Roboter würde das also bedeuten, dass dieser Daten
-     * an den Client, also die Roboter Steuerungs App (Diese Anwendung),
-     * gesendet hat.
+     * Was soll passieren, wenn durch einen {@link NetworkAdapter} Daten von
+     * einem Remote Gerät erhalten wurden. Das was passieren soll ist in dieser
+     * Methode zu definieren
      *
-     * @param data Die vom Sender empfangenen Daten
+     * @param data Die vom Remote Gerät (dem Roboter) empfangenen Daten
      */
 
     void onDataReceived(String data);

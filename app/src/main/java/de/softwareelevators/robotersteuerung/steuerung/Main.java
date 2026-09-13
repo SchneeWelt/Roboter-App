@@ -1,42 +1,46 @@
 package de.softwareelevators.robotersteuerung.steuerung;
 
-import android.bluetooth.BluetoothDevice;
 import de.softwareelevators.robotersteuerung.MainActivity;
+import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothAdapter;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
-import de.softwareelevators.robotersteuerung.networkAdapter.WLanAdapter;
 import de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter;
-import de.softwareelevators.robotersteuerung.util.ConnectionState;
+import de.softwareelevators.robotersteuerung.util.ConnectionStateStorage;
 
 
 /**
  * Besteht aus Adaptern und bildet die oberste Ebene der App. Wird direkt
- * aus der MainActivity heraus gestartet
+ * aus der MainActivity heraus gestartet. Dient als Abstraktionsschicht
+ * zwischen Anwendungslogik und der standart Android App Logik schicht
+ * aus {@link MainActivity}
  */
-public class Steuereinheit
+public class Main
 {
-
+	private MainActivity mainActivity;
 	private final UIAdapter uiAdapter;
 	private final NetworkAdapter networkAdapter;
-	private final ConnectionState connectionState;
+
+
+	private final ConnectionStateStorage connectionStateStorage;
 
 
 //	private Sendebegrenzer sendebegrenzer;
 //	private VertikalerRegler geschwindigkeitsregler;
 
-	public Steuereinheit(MainActivity mainActivity)
+	public Main(MainActivity mainActivity)
 	{
+		this.mainActivity = mainActivity;
+
 		/* Netzwerkcontroller einrichten */
-		networkAdapter = new WLanAdapter();
-//		networkAdapter = new BluetoothController("ESP32", this,this, mainActivity);;
+//		networkAdapter = new WLanAdapter();
+		networkAdapter = new BluetoothAdapter("ESP32", mainActivity);;
 
-		/* Steuerelemtschnittstellen der Views mit der Steuereinheit verbinden */
-//		joystick.setJoystickListener(this);
-//		geschwindigkeitsregler.setSliderListener(this);
+		die app sollte für bt jetzt endlich wieder funktionieren! -> testen!
 
-		/* UI Handler initialisieren */
-		uiAdapter = new UIAdapter(this, mainActivity);
+		// Steuerung initialisieren
+		uiAdapter = new UIAdapter(this, networkAdapter);
 
-		connectionState = new ConnectionState();
+		// Hierrüber kann der UI Adapter erkennen, ob eine Verbindung zu einem Remote Gerät besteht
+		connectionStateStorage = new ConnectionStateStorage();
 	}
 
 
@@ -66,13 +70,13 @@ public class Steuereinheit
 		return networkAdapter;
 	}
 
-	public UIAdapter getUiAdapter()
+	public ConnectionStateStorage getConnectionStateStorage()
 	{
-		return uiAdapter;
+		return connectionStateStorage;
 	}
 
-	public ConnectionState getConnectionState()
+	public MainActivity getMainActivity()
 	{
-		return connectionState;
+		return mainActivity;
 	}
 }

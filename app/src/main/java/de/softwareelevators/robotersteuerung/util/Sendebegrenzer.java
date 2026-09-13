@@ -36,9 +36,8 @@ public class Sendebegrenzer
 		vorheriegerLenkwinkel = Integer.MIN_VALUE;
 		vorheriegeFahrgeschwindigkeit = Integer.MIN_VALUE;
 
-		sendingWrapper = new SendingWrapper(networkAdapter);
-
 		handler = new Handler(Looper.getMainLooper());
+		sendingWrapper = new SendingWrapper(networkAdapter);
 	}
 
 	/**

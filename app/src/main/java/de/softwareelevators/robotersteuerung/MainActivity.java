@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
-import de.softwareelevators.robotersteuerung.steuerung.Steuereinheit;
+import de.softwareelevators.robotersteuerung.steuerung.Main;
 import de.softwareelevators.robotersteuerung.util.ActivityLauncher;
 
 public class MainActivity extends AppCompatActivity
@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		setContentView(R.layout.activity_main);
 
-		new Steuereinheit(this);
+		new Main(this);
 	}
 
 	/* DeviceName könnte ich mir auch über ein Intent besorgen. Ich schreibe eine

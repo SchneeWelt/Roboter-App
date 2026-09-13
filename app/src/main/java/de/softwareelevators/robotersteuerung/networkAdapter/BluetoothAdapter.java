@@ -19,9 +19,8 @@ import java.util.UUID;
 
 /** Erlaubt das Herstellen von Verbindungen zu anderen Geräten
  * über klassisches Bluetooth (nicht BLE). Anschließend ist die
- * Datenübertragung zu diesem Gerät möglich. Jeweils eine Verbindung pro COntroller Instanz.
- *  * Anschließend ist die Datenübertragung zu dem verbundenen Gerät
- *  * möglich. */
+ * Datenübertragung zu diesem Gerät möglich. Jeweils eine Verbindung pro Controller Instanz.
+ */
 public class BluetoothAdapter extends NetworkAdapter
 {
 	/**
@@ -40,8 +39,9 @@ public class BluetoothAdapter extends NetworkAdapter
 	* zum Zielgerät sehr wichtig. */
 	private android.bluetooth.BluetoothAdapter bluetoothAdapter;
 
-	/** Das BT Gerät, mit dem diese Anwendung verbunden ist.
-	* Ist dieses Objekt null, so besteht keine BT Verbindung
+	/** Das BT Gerät, mit dem diese Anwendung per Remoteverbindung
+	* verbunden ist.
+	* Ist dieses Objekt null, so besteht keine BT Remote Verbindung
 	* zu einem BT Gerät. */
 	private BluetoothDevice connectedDevice;
 
@@ -55,17 +55,19 @@ public class BluetoothAdapter extends NetworkAdapter
 
 	private MainActivity mainActivity;
 
-	private NetworkConnectionStateListener networkConnectionStateListener;
-	private DataReceivedListener dataReceivedListener;
 
-
-	public BluetoothAdapter(String deviceName, DataReceivedListener dataReceivedListener, NetworkConnectionStateListener networkConnectionStateListener, MainActivity mainActivity)
+	public BluetoothAdapter(String deviceName, MainActivity mainActivity)
 	{
 		this.deviceName = deviceName;
 		this.mainActivity = mainActivity;
-		this.networkConnectionStateListener = networkConnectionStateListener;
-		this.dataReceivedListener = dataReceivedListener;
 	}
+
+	@Override
+	public void onDataReceived(String data)
+	{
+
+	}
+
 
 	/**
 	 * Dieser Befehl startet den Verbindungsaufbau zum Roboter.
@@ -103,7 +105,7 @@ public class BluetoothAdapter extends NetworkAdapter
 			// this::handleEnableBtResult übergibt Referenz von handleEnableBtResult() an launch Methode
 			// => Direkte Lambda spezifikation wird vermieden, was den Code lesbarer macht.
 		} else
-			zielgerätFinden();
+			zielgerätFinden();	// BT jetzt eingeschaltet. Nächster Schritt
 	}
 
 	/**
@@ -132,6 +134,10 @@ public class BluetoothAdapter extends NetworkAdapter
 	}
 
 
+	/**
+	 * Im nächsten Schritt wird jetzt das Zielgerät gesucht und gefunden zu dem diese Klasse
+	 * eine Verbindung aufbauen soll.
+	 */
 	private void zielgerätFinden()
 	{
 		/* Über alle gekoppelten Geräte iterieren. Wenn dort der im
@@ -180,6 +186,12 @@ public class BluetoothAdapter extends NetworkAdapter
 		connectToTargetDevice(targetDevice);
 	}
 
+	/**
+	 * Im letzten Schritt ist das Zielgerät über den Paramter bekannt und es wird
+	 * eine Verbindung zu diesem aufgebaut
+	 *
+	 * @param targetDevice
+	 */
 	private void connectToTargetDevice(BluetoothDevice targetDevice)
 	{
 		/* Diese UUID gibt dem Zielgerät zu verstehen, dass es über das Serial Port
@@ -218,9 +230,11 @@ public class BluetoothAdapter extends NetworkAdapter
 
 					Ausgabe.print("Verbindung zu Zielgerät erfolgreich hergestellt!");
 
-					mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
+					connectedDevice = targetDevice;
 
-					networkConnectionStateListener.onConnect(connectedDevice);
+					onConnectionEstablished(connectedDevice);
+
+					mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
 				} catch (Exception e)
 				{
 					Ausgabe.print("Verbindungsaufbau fehlgeschlagen: " + e.getMessage());
@@ -232,14 +246,14 @@ public class BluetoothAdapter extends NetworkAdapter
 
 	public void disconnect()
 	{
+		super.disconnect();
+
 		if (!isConnected())
 			return;
 
 		try
 		{
 			bluetoothSocket.close();
-
-			networkConnectionStateListener.onDisconnect();
 
 			mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung getrennt", Toast.LENGTH_SHORT).show());
 		} catch (Exception e)
