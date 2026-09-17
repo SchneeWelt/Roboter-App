@@ -81,6 +81,8 @@ public class Sendebegrenzer
 		/* Nur bei Wertänderung senden -> Spamvermeidung */
 		if (lenkwinkelÄnderung || fahrgeschwindigkeitsÄnderung)
 		{
+			Ausgabe.print("Sende Daten an Ziel");
+
 			sendingWrapper.steuerdatenSenden(lenkwinkel, fahrgeschwindigkeit);
 
 			vorheriegerLenkwinkel = lenkwinkel;

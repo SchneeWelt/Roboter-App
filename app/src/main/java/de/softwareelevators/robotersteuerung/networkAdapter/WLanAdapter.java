@@ -3,6 +3,7 @@ package de.softwareelevators.robotersteuerung.networkAdapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -11,7 +12,7 @@ import java.nio.charset.StandardCharsets;
  * Anschließend ist die Datenübertragung zu dem verbundenen Gerät
  * möglich. */
 
-STA Modus im Roboter:
+//STA Modus im Roboter:
 /*
 	Der Roboter soll im STA Modus laufen. Heißt er kommuniziert über einen
 	Router mit meinem Handy. Aktuell läuft er im AP Modus, da ist er selbst
@@ -72,30 +73,30 @@ public class WLanAdapter extends NetworkAdapter
 			if (socket != null && !socket.isClosed())
 				disconnect();
 
-			ich sollte mich hier über mDNS verbinden. Dann muss ich die IP Adresse des EPS32 nicht kennen,
-			die müsste ich andernfalls ja herausfinden. Auf dieser seite:
+//			ich sollte mich hier über mDNS verbinden. Dann muss ich die IP Adresse des EPS32 nicht kennen,
+//			die müsste ich andernfalls ja herausfinden. Auf dieser seite:
 
 		socket = new Socket("esp32robot.local", 1234);
 
-			andere seite:
-
-			#include <ESPmDNS.h>
-
-			MDNS.begin("esp32robot");
-
-			falls das nicht funzt: IP Adresse über serial monitor ausgeben lassen oder:
-
-			Der klassische udp broadcast. Der ist am aufwändigsten zu implementieren. Hier ausschnitte:
-
-			esp 32
-			udp.beginPacket("255.255.255.255", 4210);
-			udp.print(WiFi.localIP());
-			udp.endPacket();
-
-			app
-			DatagramPacket packet = new DatagramPacket(buf, buf.length);
-			socket.receive(packet);
-			String espIp = new String(packet.getData());
+//			andere seite:
+//
+//			#include <ESPmDNS.h>
+//
+//			MDNS.begin("esp32robot");
+//
+//			falls das nicht funzt: IP Adresse über serial monitor ausgeben lassen oder:
+//
+//			Der klassische udp broadcast. Der ist am aufwändigsten zu implementieren. Hier ausschnitte:
+//
+//			esp 32
+//			udp.beginPacket("255.255.255.255", 4210);
+//			udp.print(WiFi.localIP());
+//			udp.endPacket();
+//
+//			app
+//			DatagramPacket packet = new DatagramPacket(buf, buf.length);
+//			socket.receive(packet);
+//			String espIp = new String(packet.getData());
 
 
 

@@ -13,6 +13,7 @@ import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkConnectionStateListener;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.steuerung.Main;
+import de.softwareelevators.robotersteuerung.util.Ausgabe;
 import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 
 /**
@@ -85,6 +86,8 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 		{
 			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
 			sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
+
+			Ausgabe.print("Aktualisier Daten: " + lenkwinkel + " | " + fahrgeschwindigkeit);
 		}
 	}
 

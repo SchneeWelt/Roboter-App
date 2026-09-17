@@ -48,8 +48,6 @@ public class Main
 		uiAdapter = new UIAdapter(this, networkAdapter);
 
 
-
-
 		/* Nach allen möglichen Runtime permissions fragen. Der Trick: Wird eine Permmission einmal
 		erlaubt, so merkt sich das die App und solange diese dann nicht neu gestartet order zurückgesetzt
 		wird, muss nie wieder diese Permission neu eingeholt werden. Heißt der nachfolgende Teil nervt einmal
