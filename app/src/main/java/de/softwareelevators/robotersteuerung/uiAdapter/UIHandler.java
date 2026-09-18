@@ -3,54 +3,56 @@ package de.softwareelevators.robotersteuerung.uiAdapter;
 
 import android.bluetooth.BluetoothDevice;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.RadioGroup;
-import androidx.annotation.NonNull;
-import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.networkAdapter.DataReceivedListener;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkConnectionStateListener;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.steuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
+import de.softwareelevators.robotersteuerung.util.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 
 /**
  * Ein Adapter für alle UI Elemente der App. Die Elemente existieren hier als
  * Objekte und dessen Daten werden hier verarbeitet
  */
-public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionStateListener, DataReceivedListener
+public class UIHandler extends NetworkAdapter implements Joystick.JoystickListener
 {
 	private final Main main;
 	private final UIElemente uiElemente;
 	private Sendebegrenzer sendebegrenzer;
-	private NetworkAdapter networkAdapter;
+
+	/** Objekte dieser Klasse senden Daten über dieses Objekt */
+	private NetworkHandler networkHandler;
 
 	/**
+	 * Die Klasse {@link NetworkHandler} muss vor Erzeugung eines
+	 * Objektes dieser Klasse als Objekt in {@link Main} intialisiert
+	 * worden sein
+	 *
 	 * @param main
-	 * @param networkAdapter Über dieses Objekt kann diese Klasse
-	 *                       Daten senden
 	 */
-	public UIAdapter(Main main, NetworkAdapter networkAdapter)
+	public UIHandler(Main main)
 	{
 		this.main = main;
-		this.networkAdapter = networkAdapter;
 
 		uiElemente = new UIElemente(main, this);
 
-		onAdapterChanged(networkAdapter);
+		onNetworkHandlerChanged(main.getNetworkHandler());
 	}
 
 	/**
-	 * Wird immer dann geworfen, wenn der aktive {@link NetworkAdapter} durch das
+	 * Wird immer dann geworfen, wenn der aktive {@link NetworkHandler} durch das
 	 * UI gewechselt wurde. Das kommt dem Umstellen von Bluetooth auf W-Lan bzw von
 	 * W-Lan auf Bluetooth gleich
 	 *
-	 * @param networkAdapter Der neue Adapter
+	 * @param networkHandler Der neue Adapter
 	 */
-	public void onAdapterChanged(NetworkAdapter networkAdapter)
+	public void onNetworkHandlerChanged(NetworkHandler networkHandler)
 	{
+		// Den neuen NetworkHandler globale für die weitere Verwendung in dieser Klasse
+		// speichern
+		this.networkHandler = networkHandler;
+
 //		rufe methode über neues ui element auf. Einen toggle button will ich haben.
 //		dieser neue button muss vor diesem aufruf einen networkAdapter.disconnect();
 //		befehl ausführen
@@ -58,19 +60,23 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 		if (sendebegrenzer != null)
 			sendebegrenzer.stop();
 
-		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
-		sendebegrenzer = new Sendebegrenzer(networkAdapter);
+		/* Sendebegrenzer zum Senden der Daten initialisieren und starten */
+		sendebegrenzer = new Sendebegrenzer(networkHandler);
+		sendebegrenzer.start();	// Macht diese Zeile hier sinn?
 
 		// Dem UI Handler ermöglichen auf Dateneingang und Verbindungsauf und -abbau
 		// zu reagieren
-		networkAdapter.setDataReceivedListener(this);
-		networkAdapter.setNetworkConnectionStateListener(this);
+		networkHandler.setDataReceivedListener(this);
+		networkHandler.setNetworkConnectionStateListener(this);
 	}
 
 	@Override
 	public void onDataReceived(String data)
 	{
 		// Daten vom Roboter erhalten, was tun?:
+
+		// Roboter kann aktuell keine Daten zurückschicken
+		// Schnittstelle daher nicht implementiert
 	}
 
 	@Override
@@ -82,7 +88,7 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 
 		updateSteeringDataDisplay(lenkwinkel, fahrgeschwindigkeit);
 
-		if (networkAdapter.isConnected())
+		if (networkHandler.isConnected())
 		{
 			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
 			sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
@@ -104,7 +110,7 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 		main.getMainActivity().runOnUiThread(this::onConnect_ButtonUpdate);
 		main.getMainActivity().runOnUiThread(this::onConnect_StatusUpdate);
 
-		sendebegrenzer.start();
+//		sendebegrenzer.start();
 	}
 
 	@Override
@@ -130,7 +136,7 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 		Button connectButton = uiElemente.getConnectButton();
 
 		connectButton.setText(R.string.verbinden);
-		connectButton.setOnClickListener((view) -> main.getNetworkAdapter().connect());
+		connectButton.setOnClickListener((view) -> main.getNetworkHandler().connect());
 	}
 
 	private void onDisconnect_StatusUpdate()

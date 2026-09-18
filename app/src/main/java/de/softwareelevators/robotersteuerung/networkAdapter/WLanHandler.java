@@ -3,7 +3,6 @@ package de.softwareelevators.robotersteuerung.networkAdapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.DatagramPacket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -54,11 +53,11 @@ void loop() {
  */
 
 
-public class WLanAdapter extends NetworkAdapter
+public class WLanHandler extends NetworkHandler
 {
 	private Socket socket;
 
-	public WLanAdapter()
+	public WLanHandler()
 	{
     }
 

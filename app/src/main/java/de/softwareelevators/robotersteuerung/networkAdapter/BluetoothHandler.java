@@ -1,18 +1,14 @@
 package de.softwareelevators.robotersteuerung.networkAdapter;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.*;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
-import androidx.core.app.ActivityCompat;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.steuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
-import de.softwareelevators.robotersteuerung.util.BtPermissionChecker;
 
 import java.io.OutputStream;
 import java.util.Set;
@@ -21,9 +17,10 @@ import java.util.UUID;
 
 /** Erlaubt das Herstellen von Verbindungen zu anderen Geräten
  * über klassisches Bluetooth (nicht BLE). Anschließend ist die
- * Datenübertragung zu diesem Gerät möglich. Jeweils eine Verbindung pro Controller Instanz.
+ * Datenübertragung zu diesem Gerät möglich. Jeweils eine Verbindung
+ * pro Controller Instanz.
  */
-public class BluetoothAdapter extends NetworkAdapter
+public class BluetoothHandler extends NetworkHandler
 {
 	private Main main;
 
@@ -57,10 +54,9 @@ public class BluetoothAdapter extends NetworkAdapter
 	private BluetoothSocket bluetoothSocket;
 
 
-	public BluetoothAdapter(Main main)
+	public BluetoothHandler(Main main)
 	{
 		this.main = main;
-//        this.deviceName = deviceName;
 
 		deviceName = "ESP32";
 	}
@@ -95,7 +91,7 @@ public class BluetoothAdapter extends NetworkAdapter
 			/* Gerät unterstützt kein Bluetooth -> Fehlermeldung ausgeben */
 			Ausgabe.print("Fehler: Dieses Gerät unterstützt kein Bluetooth");
 
-			Toast.makeText(mainActivity, "Achtung: Dieses Gerät unterstützt kein Bleutooth...", Toast.LENGTH_SHORT);
+			Toast.makeText(mainActivity, "Achtung: Dieses Gerät unterstützt kein Bleutooth...", Toast.LENGTH_SHORT).show();
 
 			return;
 		}
@@ -115,7 +111,7 @@ public class BluetoothAdapter extends NetworkAdapter
 			// this::handleEnableBtResult übergibt Referenz von handleEnableBtResult() an launch Methode
 			// => Direkte Lambda spezifikation wird vermieden, was den Code lesbarer macht.
 		} else
-			zielgerätFinden();	// BT jetzt eingeschaltet. Nächster Schritt
+			zielgeraetFinden();	// BT jetzt eingeschaltet. Nächster Schritt
 	}
 
 	/**
@@ -135,7 +131,7 @@ public class BluetoothAdapter extends NetworkAdapter
 		{
 			Ausgabe.print("Bluetooth wurde aktiviert...");
 
-			zielgerätFinden();
+			zielgeraetFinden();
 		}
 		else if (resultCode == Activity.RESULT_CANCELED)
 			Toast.makeText(mainActivity, "Bitte für Stuerung Bluetooth aktivieren...", Toast.LENGTH_SHORT).show();
@@ -150,8 +146,8 @@ public class BluetoothAdapter extends NetworkAdapter
 	 * Im nächsten Schritt wird jetzt das Zielgerät gesucht und gefunden zu dem diese Klasse
 	 * eine Verbindung aufbauen soll.
 	 */
-	@SuppressLint("MissingPermission")
-    private void zielgerätFinden()
+	@SuppressLint("MissingPermission")	// Stimmt nicht, frage ich vorab über eine Methode ab. Intellij erkents aber nicht
+    private void zielgeraetFinden()
 	{
 		MainActivity mainActivity = main.getMainActivity();
 

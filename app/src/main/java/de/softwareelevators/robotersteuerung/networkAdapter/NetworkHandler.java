@@ -1,17 +1,14 @@
 package de.softwareelevators.robotersteuerung.networkAdapter;
 
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
-import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
-import de.softwareelevators.robotersteuerung.util.ConnectionStateStorage;
 
 
 /**
  * Definiert wird diese Anwendung mit einem Remote Gerät (einem Roboter)
- * kommuniziert. Möglich ist die Kommunikation über Bluetooth: {@link BluetoothAdapter}
- * oder über W-Lan: {@link WLanAdapter}
+ * kommuniziert. Möglich ist die Kommunikation über Bluetooth: {@link BluetoothHandler}
+ * oder über W-Lan: {@link WLanHandler}
  */
-public abstract class NetworkAdapter
+public abstract class NetworkHandler
 {
 	/** Gibt an, ob diese Klasse mit einem Remote Gerät verbunden ist */
 	private ConnectionState connectionState;
@@ -19,7 +16,7 @@ public abstract class NetworkAdapter
 	private NetworkConnectionStateListener networkConnectionStateListener;
 
 
-	public NetworkAdapter()
+	public NetworkHandler()
 	{
 		connectionState = ConnectionState.NOT_CONNECTED;
 	}

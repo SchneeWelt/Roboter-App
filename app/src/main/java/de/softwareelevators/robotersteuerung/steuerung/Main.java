@@ -4,10 +4,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import de.softwareelevators.robotersteuerung.MainActivity;
-import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothAdapter;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
-import de.softwareelevators.robotersteuerung.uiAdapter.UIAdapter;
-import de.softwareelevators.robotersteuerung.util.BtPermissionChecker;
+import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothHandler;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
+import de.softwareelevators.robotersteuerung.uiAdapter.UIHandler;
+import de.softwareelevators.robotersteuerung.util.Ausgabe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,11 @@ import java.util.List;
 public class Main
 {
 	private MainActivity mainActivity;
-	private final UIAdapter uiAdapter;
+	private final UIHandler uiHandler;
 
-	/** Der derzeit aktive Network Adapter. Kann durch die UI vom {@link UIAdapter}
+	/** Der derzeit aktive Network Adapter. Kann durch die UI vom {@link UIHandler}
 	 * getausch werden */
-	private NetworkAdapter networkAdapter;
+	private NetworkHandler networkHandler;
 
 //	private VertikalerRegler geschwindigkeitsregler;
 
@@ -38,14 +38,12 @@ public class Main
 		/* Netzwerkcontroller einrichten */
 //		networkAdapter = new WLanAdapter();
 		// Über dieses Objekt läuft die Kommunikatino zum Roboter
-		networkAdapter = new BluetoothAdapter(this);
-
-//		die app sollte für bt jetzt endlich wieder funktionieren! -> testen!
+		networkHandler = new BluetoothHandler(this);
 
 		// Dieses Objekt verwendet das obere Objekt, um Daten an den Roboter
 		// zu senden. Dafür ermöglicht es die spezifikation dazu, was gesendet
 		// werden solle
-		uiAdapter = new UIAdapter(this, networkAdapter);
+		uiHandler = new UIHandler(this);
 
 
 		/* Nach allen möglichen Runtime permissions fragen. Der Trick: Wird eine Permmission einmal
@@ -53,11 +51,13 @@ public class Main
 		wird, muss nie wieder diese Permission neu eingeholt werden. Heißt der nachfolgende Teil nervt einmal
 		und dann nie wieder */
 
-		hohleBerechtigungen();
+		if (hohleBerechtigungen())
+			Ausgabe.print("Alle Berechtitungen erteilt");
+		else
+			Ausgabe.print("App Berechtitungen verweigert. Neustart empfohlen");
 	}
 
 	/**
-	 *
 	 * @return true, wenn keine Permission fehlte und der Programmablauf also nicht
 	 * neu gestartet werden musss
 	 */
@@ -137,45 +137,17 @@ public class Main
 		return false;
 	}
 
-
-//	public Steuereinheit(Joystick joystick, VertikalerRegler geschwindigkeitsregler, MainActivity mainActivity)
-//	{
-//		this.joystick = joystick;
-//		this.geschwindigkeitsregler = geschwindigkeitsregler;
-//
-//		/* Netzwerkcontroller einrichten */
-////		wLanController = new WLanController();
-//		NetworkController activeNetworkController = new BluetoothController("ESP32", this,this, mainActivity);;
-//
-//		/* Steuerelemtschnittstellen der Views mit der Steuereinheit verbinden */
-//		joystick.setJoystickListener(this);
-//		geschwindigkeitsregler.setSliderListener(this);
-//
-//		/* UI Handler initialisieren */
-//		uiUpdater = new UiUpdater(activeNetworkController, mainActivity);
-//
-//		/* Sendebegrenzer zum senden der Daten initialisieren und starten */
-//		sendebegrenzer = new Sendebegrenzer(activeNetworkController);
-//		sendebegrenzer.start();
-//	}
-
-	public NetworkAdapter getNetworkAdapter()
+	public NetworkHandler getNetworkHandler()
 	{
-		return networkAdapter;
+		return networkHandler;
 	}
-
-//	public ConnectionStateStorage getConnectionStateStorage()
-//	{
-//		return connectionStateStorage;
-//	}
-
 	public MainActivity getMainActivity()
 	{
 		return mainActivity;
 	}
 
-	public void setNetworkAdapter(NetworkAdapter networkAdapter)
+	public void setNetworkHandler(NetworkHandler networkHandler)
 	{
-		this.networkAdapter = networkAdapter;
+		this.networkHandler = networkHandler;
 	}
 }
