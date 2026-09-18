@@ -99,7 +99,8 @@ public class WLanHandler extends NetworkHandler
 
 
 
-			socket = new Socket("192.168.4.1", 1234);
+			// Da ich mDNS verwende benötige ich keine hardcoded IP Adressen mehr!
+//			socket = new Socket("192.168.4.1", 1234);
 		} catch (IOException e)
 		{
 			throw new RuntimeException(e);
