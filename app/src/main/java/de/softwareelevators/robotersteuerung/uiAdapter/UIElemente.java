@@ -9,6 +9,7 @@ import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
 import de.softwareelevators.robotersteuerung.networkAdapter.WLanHandler;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.steuerung.Main;
+import de.softwareelevators.robotersteuerung.uiWidgets.ConnectButton;
 import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
 import de.softwareelevators.robotersteuerung.uiWidgets.DataDisplay;
 
@@ -19,13 +20,12 @@ import de.softwareelevators.robotersteuerung.uiWidgets.DataDisplay;
  */
 public class UIElemente
 {
-    private Main main;
-    private Joystick joystick;
-    private UIHandler uiHandler;
-    private Button connectButton;
-    private ToggleButton toggleButton;
-    private DataDisplay dataDisplay; //steuerdaten2stuerdatendisplay;
-    private ConnectionStateDisplay connectionStateDisplay;
+    private final Main main;
+    private final Joystick joystick;
+    private final UIHandler uiHandler;
+    private final DataDisplay dataDisplay;
+    private final ConnectButton connectButton;
+    private final ConnectionStateDisplay connectionStateDisplay;
 
 
     public UIElemente(Main main, UIHandler uiHandler)
@@ -40,35 +40,27 @@ public class UIElemente
         dataDisplay = mainActivity.findViewById(R.id.steuerdaten_display);
         connectionStateDisplay = mainActivity.findViewById(R.id.verbindungsstatus);
 
-        toggleButton = mainActivity.findViewById(R.id.mode_switcher);
+        ToggleButton toggleButton = mainActivity.findViewById(R.id.mode_switcher);
         toggleButton.setOnCheckedChangeListener(this::onToggle);
-
-        connectButton.setOnClickListener((view) -> main.getNetworkHandler().connect());
 
         joystick.setJoystickListener(uiHandler);
     }
 
-    private void onToggle(CompoundButton b, boolean a)
+    private void onToggle(CompoundButton b, boolean newState)
     {
         NetworkHandler newAdapter = null;
 
-        if (a)  // W-Lan Modus aktivieren
+        if (newState)  // W-Lan Modus aktivieren
         {
-            newAdapter = new WLanHandler();
-
-            uiHandler.onNetworkHandlerChanged(newAdapter);
+            uiHandler.onNetworkHandlerChanged(new WLanHandler());
 
             Toast.makeText(main.getMainActivity(), "W-Lanmodus aktiviert", Toast.LENGTH_SHORT).show();
         } else // Bluetoothmodus aktivieren
         {
-            newAdapter = new BluetoothHandler(main);
-
-            uiHandler.onNetworkHandlerChanged(newAdapter);
+            uiHandler.onNetworkHandlerChanged(new BluetoothHandler(main));
 
             Toast.makeText(main.getMainActivity(), "Bluetoothmodus aktiviert", Toast.LENGTH_SHORT).show();
         }
-
-        main.setNetworkHandler(newAdapter);
     }
 
     public DataDisplay getSteeringDataDisplay()
@@ -81,7 +73,7 @@ public class UIElemente
         return connectionStateDisplay;
     }
 
-    public Button getConnectButton()
+    public ConnectButton getConnectButton()
     {
         return connectButton;
     }

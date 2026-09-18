@@ -4,10 +4,12 @@ package de.softwareelevators.robotersteuerung.uiAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.widget.Button;
 import de.softwareelevators.robotersteuerung.R;
+import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothHandler;
 import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
 import de.softwareelevators.robotersteuerung.steuerung.Joystick;
 import de.softwareelevators.robotersteuerung.steuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
+import de.softwareelevators.robotersteuerung.util.MathTools;
 import de.softwareelevators.robotersteuerung.util.NetworkAdapter;
 import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 
@@ -21,7 +23,10 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	private final UIElemente uiElemente;
 	private Sendebegrenzer sendebegrenzer;
 
-	/** Objekte dieser Klasse senden Daten über dieses Objekt */
+
+	/** Der derzeit aktive {@link NetworkHandler}. Kann durch die UI vom {@link UIHandler}
+	 * ausgetauscht werden. Dieses Objekt wird von Objekten dieser Klasse zum Senden und Empfangen
+	 * von Daten über ein Netzwerk verwendet */
 	private NetworkHandler networkHandler;
 
 	/**
@@ -37,7 +42,8 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 
 		uiElemente = new UIElemente(main, this);
 
-		onNetworkHandlerChanged(main.getNetworkHandler());
+		// Im Bluetooth Modus starten
+		onNetworkHandlerChanged(new BluetoothHandler(main));
 	}
 
 	/**
@@ -53,18 +59,14 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 		// speichern
 		this.networkHandler = networkHandler;
 
-//		rufe methode über neues ui element auf. Einen toggle button will ich haben.
-//		dieser neue button muss vor diesem aufruf einen networkAdapter.disconnect();
-//		befehl ausführen
-
+		// Falls alter sendebegrenzer aktiv -> diesen Stoppen
 		if (sendebegrenzer != null)
 			sendebegrenzer.stop();
 
-		/* Sendebegrenzer zum Senden der Daten initialisieren und starten */
+		/* Sendebegrenzer zum Senden der Daten mit neuem Handler initialisieren */
 		sendebegrenzer = new Sendebegrenzer(networkHandler);
-		sendebegrenzer.start();	// Macht diese Zeile hier sinn?
 
-		// Dem UI Handler ermöglichen auf Dateneingang und Verbindungsauf und -abbau
+		// Diesem Objekt ermöglichen auf Dateneingang, Verbindungsauf und -abbau
 		// zu reagieren
 		networkHandler.setDataReceivedListener(this);
 		networkHandler.setNetworkConnectionStateListener(this);
@@ -79,107 +81,52 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 		// Schnittstelle daher nicht implementiert
 	}
 
-	@Override
-	public void onJoyStickMoved(float xPercent, float yPercent)
-	{
-		/* Lenkwinkel berechnen. Wertebereich: [0;180] (rechte Hälfte), [-0;-180] (linke Hälfte) */
-		float lenkwinkel = lenkwinkelBerechnen(xPercent, yPercent);
-		float fahrgeschwindigkeit = fahrgeschwindigkeitBerechnen(xPercent, yPercent);
-
-		updateSteeringDataDisplay(lenkwinkel, fahrgeschwindigkeit);
-
-		if (networkHandler.isConnected())
-		{
-			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
-			sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
-
-			Ausgabe.print("Aktualisier Daten: " + lenkwinkel + " | " + fahrgeschwindigkeit);
-		}
-	}
-
-
 	/**
-	 * Wird geworfen, wenn sich eine remote Gerät mit diesem Gerät,
+	 * Wird geworfen, wenn sich ein remote Gerät mit diesem Gerät,
 	 * dieser App verbunden hat
 	 *
 	 * @param connectedDevice
 	 */
 	@Override
-	public void onConnect(BluetoothDevice connectedDevice)
+	public void onConnectionsEstablished(BluetoothDevice connectedDevice)
 	{
-		main.getMainActivity().runOnUiThread(this::onConnect_ButtonUpdate);
-		main.getMainActivity().runOnUiThread(this::onConnect_StatusUpdate);
+		// Ui Aktualisieren
+		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onConnectionEstablished());
+		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onConnectionEstablished(networkHandler));
 
-//		sendebegrenzer.start();
+		// Sendebegrenzer für die nun kommende Datenübertragung starten
+		sendebegrenzer.start();
 	}
 
 	@Override
 	public void onDisconnect()
 	{
-		main.getMainActivity().runOnUiThread(this::onDisconnect_ButtonUpdate);
-		main.getMainActivity().runOnUiThread(this::onDisconnect_StatusUpdate);
+		// Ui aktualisieren
+		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onDisconect(networkHandler));
+		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onDisconnect());
 
+		// Sendebegrenzer stoppen, da jetzt ja kein Ziel mehr existiert, mit dem kommuniziert werden müsste
 		sendebegrenzer.stop();
 	}
 
-	// ----------------------------------------------------------------------------------------
-
-	private void updateSteeringDataDisplay(float lenkwinkel, float fahrgeschwindigkeit)
+	@Override
+	public void onJoyStickMoved(float xPercent, float yPercent)
 	{
-		// Wäre eigentlich cooler, würde die text aktualisierung auch event basiert laufen
+		// Lenkwinkel berechnen. Wertebereich: [0;180] (rechte Hälfte), [-0;-180] (linke Hälfte)
+		float lenkwinkel = MathTools.lenkwinkelBerechnen(xPercent, yPercent);
+		float fahrgeschwindigkeit = MathTools.fahrgeschwindigkeitBerechnen(xPercent, yPercent);
 
+		// Und in der UI aktualisieren
 		uiElemente.getSteeringDataDisplay().updateContent(lenkwinkel, fahrgeschwindigkeit);
-	}
 
-	private void onDisconnect_ButtonUpdate()
-	{
-		Button connectButton = uiElemente.getConnectButton();
+		// Wenn remote Geräte verfügbar
+		if (networkHandler.isConnected())
+		{
+			// Aktualisierte Daten an remote Gerät schicken
+			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
+			sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
 
-		connectButton.setText(R.string.verbinden);
-		connectButton.setOnClickListener((view) -> main.getNetworkHandler().connect());
-	}
-
-	private void onDisconnect_StatusUpdate()
-	{
-		uiElemente.getConnectionStateDisplay().onDisconnect();
-	}
-
-	private void onConnect_ButtonUpdate()
-	{
-		Button connectButton = uiElemente.getConnectButton();
-//		connectButton.onConnect();
-
-//		auch button braucht eigene klasse
-
-		connectButton.setText(R.string.verbindung_trennen);
-//		connectButton.setOnClickListener((view) -> networkAdapter.disconnect());
-	}
-
-	private void onConnect_StatusUpdate()
-	{
-//		verbindungsstatusdisplay.setText(R.string.verbunden);
-//		verbindungsstatusdisplay.setTextColor(GRÜN);
-	}
-
-	private float lenkwinkelBerechnen(float xPercent, float yPercent)
-	{
-		float lenkwinkel = (float) Math.toDegrees(Math.atan2(yPercent, xPercent));
-
-		/* Koordinatensystem drehen: oben: 0°, 90°: rechts, 180°: unten, -90°:links.
-		 * Das ist richtig so und sorgt dafür, dass geradeausfahren gleichbedeutend
-		 * zu Joystick nach oben bewegen ist. */
-		lenkwinkel += 90;
-
-		/* Verschobenes Koordinatensystem jetzt noch normalisieren, damit die Werte innerhalb
-		von +-180 Grad bleiben - also so sind, wie oben beschrieben */
-		if (lenkwinkel > 180) lenkwinkel -= 360;
-		if (lenkwinkel < -180) lenkwinkel += 360;
-
-		return lenkwinkel;
-	}
-
-	private float fahrgeschwindigkeitBerechnen(float xPercent, float yPercent)
-	{
-		return (float) Math.sqrt(xPercent * xPercent + yPercent * yPercent);
+			Ausgabe.print("Aktualisier Daten: " + lenkwinkel + " | " + fahrgeschwindigkeit);
+		}
 	}
 }

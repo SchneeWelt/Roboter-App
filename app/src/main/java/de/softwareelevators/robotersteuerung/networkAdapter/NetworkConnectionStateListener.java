@@ -13,7 +13,7 @@ public interface NetworkConnectionStateListener
      *
      * @param connectedDevice
      */
-    void onConnect(BluetoothDevice connectedDevice);
+    void onConnectionsEstablished(BluetoothDevice connectedDevice);
 
 
     /** Wird geworfen, wenn eine bestehende Verbindung zu einem Gerät

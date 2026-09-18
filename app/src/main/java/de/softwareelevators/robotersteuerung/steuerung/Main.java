@@ -22,29 +22,12 @@ import java.util.List;
 public class Main
 {
 	private MainActivity mainActivity;
-	private final UIHandler uiHandler;
-
-	/** Der derzeit aktive Network Adapter. Kann durch die UI vom {@link UIHandler}
-	 * getausch werden */
-	private NetworkHandler networkHandler;
-
-//	private VertikalerRegler geschwindigkeitsregler;
 
 	public Main(MainActivity mainActivity)
 	{
 		this.mainActivity = mainActivity;
 
-
-		/* Netzwerkcontroller einrichten */
-//		networkAdapter = new WLanAdapter();
-		// Über dieses Objekt läuft die Kommunikatino zum Roboter
-		networkHandler = new BluetoothHandler(this);
-
-		// Dieses Objekt verwendet das obere Objekt, um Daten an den Roboter
-		// zu senden. Dafür ermöglicht es die spezifikation dazu, was gesendet
-		// werden solle
-		uiHandler = new UIHandler(this);
-
+		new UIHandler(this);
 
 		/* Nach allen möglichen Runtime permissions fragen. Der Trick: Wird eine Permmission einmal
 		erlaubt, so merkt sich das die App und solange diese dann nicht neu gestartet order zurückgesetzt
@@ -52,7 +35,7 @@ public class Main
 		und dann nie wieder */
 
 		if (hohleBerechtigungen())
-			Ausgabe.print("Alle Berechtitungen erteilt");
+			Ausgabe.print("Alle Berechtigungen erteilt");
 		else
 			Ausgabe.print("App Berechtitungen verweigert. Neustart empfohlen");
 	}
@@ -137,17 +120,8 @@ public class Main
 		return false;
 	}
 
-	public NetworkHandler getNetworkHandler()
-	{
-		return networkHandler;
-	}
 	public MainActivity getMainActivity()
 	{
 		return mainActivity;
-	}
-
-	public void setNetworkHandler(NetworkHandler networkHandler)
-	{
-		this.networkHandler = networkHandler;
 	}
 }

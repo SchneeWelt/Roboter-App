@@ -4,9 +4,9 @@ import android.bluetooth.BluetoothDevice;
 
 
 /**
- * Definiert wird diese Anwendung mit einem Remote Gerät (einem Roboter)
- * kommuniziert. Möglich ist die Kommunikation über Bluetooth: {@link BluetoothHandler}
- * oder über W-Lan: {@link WLanHandler}
+ * Ermöglicht dieser Anwendung die Kommunikation zu einem remote Gerät (einem Roboter).
+ * Die Kommunikation ist entweder über Bluetooth: {@link BluetoothHandler}
+ * oder über W-Lan: {@link WLanHandler} durch von dieser Klasse erbende Klassen möglich.
  */
 public abstract class NetworkHandler
 {
@@ -39,7 +39,7 @@ public abstract class NetworkHandler
 	 */
 	public void onDataReceived(String data)
 	{
-
+		dataReceivedListener.onDataReceived(data);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public abstract class NetworkHandler
 	{
 		connectionState = ConnectionState.CONNECTED;
 
-		networkConnectionStateListener.onConnect(connectedDevice);
+		networkConnectionStateListener.onConnectionsEstablished(connectedDevice);
 	}
 
 
@@ -68,6 +68,7 @@ public abstract class NetworkHandler
 	 */
 	public void connect()
 	{
+
 	}
 
 
@@ -94,6 +95,12 @@ public abstract class NetworkHandler
 		this.networkConnectionStateListener = networkConnectionStateListener;
 	}
 
+	/**
+	 * Sorgt dafür, dass dieses Objekt den hier übergebenen Parameter bei Zustandsänderungen, die
+	 * durch diesen Parameter übermittelt werden können, informiert.
+	 *
+	 * @param dataReceivedListener
+	 */
 	public void setDataReceivedListener(DataReceivedListener dataReceivedListener)
 	{
 		this.dataReceivedListener = dataReceivedListener;

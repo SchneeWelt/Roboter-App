@@ -46,4 +46,10 @@ public class ConnectionStateDisplay extends androidx.appcompat.widget.AppCompatT
         setText(R.string.nicht_verbunden);
         setTextColor(ContextCompat.getColor(context, R.color.grau));
     }
+
+    public void onConnectionEstablished()
+    {
+        setText(R.string.verbunden);
+        setTextColor(ContextCompat.getColor(context, R.color.gruen));
+    }
 }
