@@ -1,17 +1,14 @@
 package de.softwareelevators.robotersteuerung.networkAdapter;
 
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
-import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
-import de.softwareelevators.robotersteuerung.util.ConnectionStateStorage;
 
 
 /**
- * Definiert wird diese Anwendung mit einem Remote Gerät (einem Roboter)
- * kommuniziert. Möglich ist die Kommunikation über Bluetooth: {@link BluetoothAdapter}
- * oder über W-Lan: {@link WLanAdapter}
+ * Ermöglicht dieser Anwendung die Kommunikation zu einem remote Gerät (einem Roboter).
+ * Die Kommunikation ist entweder über Bluetooth: {@link BluetoothHandler}
+ * oder über W-Lan: {@link WLanHandler} durch von dieser Klasse erbende Klassen möglich.
  */
-public abstract class NetworkAdapter
+public abstract class NetworkHandler
 {
 	/** Gibt an, ob diese Klasse mit einem Remote Gerät verbunden ist */
 	private ConnectionState connectionState;
@@ -19,7 +16,7 @@ public abstract class NetworkAdapter
 	private NetworkConnectionStateListener networkConnectionStateListener;
 
 
-	public NetworkAdapter()
+	public NetworkHandler()
 	{
 		connectionState = ConnectionState.NOT_CONNECTED;
 	}
@@ -42,7 +39,7 @@ public abstract class NetworkAdapter
 	 */
 	public void onDataReceived(String data)
 	{
-
+		dataReceivedListener.onDataReceived(data);
 	}
 
 	/**
@@ -56,7 +53,7 @@ public abstract class NetworkAdapter
 	{
 		connectionState = ConnectionState.CONNECTED;
 
-		networkConnectionStateListener.onConnect(connectedDevice);
+		networkConnectionStateListener.onConnectionsEstablished(connectedDevice);
 	}
 
 
@@ -71,6 +68,7 @@ public abstract class NetworkAdapter
 	 */
 	public void connect()
 	{
+
 	}
 
 
@@ -97,6 +95,12 @@ public abstract class NetworkAdapter
 		this.networkConnectionStateListener = networkConnectionStateListener;
 	}
 
+	/**
+	 * Sorgt dafür, dass dieses Objekt den hier übergebenen Parameter bei Zustandsänderungen, die
+	 * durch diesen Parameter übermittelt werden können, informiert.
+	 *
+	 * @param dataReceivedListener
+	 */
 	public void setDataReceivedListener(DataReceivedListener dataReceivedListener)
 	{
 		this.dataReceivedListener = dataReceivedListener;

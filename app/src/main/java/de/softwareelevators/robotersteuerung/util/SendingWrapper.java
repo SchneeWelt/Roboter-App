@@ -1,7 +1,7 @@
 package de.softwareelevators.robotersteuerung.util;
 
 
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
+import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
 
 /**
  * Kapselt Methoden, die zum Senden der Daten an das verbundene
@@ -10,11 +10,11 @@ import de.softwareelevators.robotersteuerung.networkAdapter.NetworkAdapter;
  */
 public class SendingWrapper
 {
-	private NetworkAdapter networkAdapter;
+	private NetworkHandler networkHandler;
 
-	public SendingWrapper(NetworkAdapter networkAdapter)
+	public SendingWrapper(NetworkHandler networkHandler)
 	{
-		this.networkAdapter = networkAdapter;
+		this.networkHandler = networkHandler;
 	}
 
 	/**
@@ -27,9 +27,9 @@ public class SendingWrapper
 		/* Deadzone, um Zittern des Roboters zu verhinden */
 		float deadzone = 5f;	// Entfernung von Joystick Center mindestens 5%
 		if (fahrgeschwindigkeit < deadzone)
-			networkAdapter.sendData(baueSteuerdaten(0, 0));
+			networkHandler.sendData(baueSteuerdaten(0, 0));
 		else
-			networkAdapter.sendData(baueSteuerdaten(lenkwinkel, fahrgeschwindigkeit));
+			networkHandler.sendData(baueSteuerdaten(lenkwinkel, fahrgeschwindigkeit));
 
 		/* Debugdaten in der Konsole ausgeben */
 		Ausgabe.blank();

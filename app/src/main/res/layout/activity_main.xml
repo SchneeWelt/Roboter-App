@@ -84,7 +84,7 @@
 <!--			app:layout_constraintVertical_bias="0.8"-->
 <!--	/>-->
 
-	<Button
+	<de.softwareelevators.robotersteuerung.uiWidgets.ConnectButton
 			android:text="Connect"
 
 			android:id="@+id/connect_button"
