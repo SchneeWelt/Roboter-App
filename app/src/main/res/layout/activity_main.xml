@@ -50,7 +50,7 @@
 	/>
 
 <!--	setzen der layout_width und height sagt dem layout manger: berechne größe selbstständig-->
-	<de.softwareelevators.robotersteuerung.steuerung.Joystick
+	<de.softwareelevators.robotersteuerung.uiWidgets.Joystick
 			android:id="@+id/joystick"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
@@ -67,7 +67,7 @@
 			app:layout_constraintVertical_bias="0.95"
 	/>
 
-<!--	<de.softwareelevators.robotersteuerung.steuerung.VertikalerRegler-->
+<!--	<de.softwareelevators.robotersteuerung.uiWidgets.VertikalerRegler-->
 <!--			android:id="@+id/ges_regler"-->
 <!--			android:layout_width="0dp"-->
 <!--			android:layout_height="0dp"-->

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
-import de.softwareelevators.robotersteuerung.steuerung.Main;
 import de.softwareelevators.robotersteuerung.util.ActivityLauncher;
 
 public class MainActivity extends AppCompatActivity

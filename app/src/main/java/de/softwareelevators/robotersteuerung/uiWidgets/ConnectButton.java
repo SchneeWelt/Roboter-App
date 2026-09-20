@@ -2,9 +2,8 @@ package de.softwareelevators.robotersteuerung.uiWidgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
 import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
 
 public class ConnectButton extends androidx.appcompat.widget.AppCompatButton
 {

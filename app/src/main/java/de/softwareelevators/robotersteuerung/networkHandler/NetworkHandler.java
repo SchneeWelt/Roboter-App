@@ -1,4 +1,4 @@
-package de.softwareelevators.robotersteuerung.networkAdapter;
+package de.softwareelevators.robotersteuerung.networkHandler;
 
 import android.bluetooth.BluetoothDevice;
 

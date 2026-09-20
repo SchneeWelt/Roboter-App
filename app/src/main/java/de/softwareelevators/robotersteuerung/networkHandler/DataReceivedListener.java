@@ -1,4 +1,4 @@
-package de.softwareelevators.robotersteuerung.networkAdapter;
+package de.softwareelevators.robotersteuerung.networkHandler;
 
 
 /** Ermöglicht eine Reaktion externer Klassen auf den Erhalt von Daten von

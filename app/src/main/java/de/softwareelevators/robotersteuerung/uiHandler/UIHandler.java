@@ -1,13 +1,11 @@
-package de.softwareelevators.robotersteuerung.uiAdapter;
+package de.softwareelevators.robotersteuerung.uiHandler;
 
 
 import android.bluetooth.BluetoothDevice;
-import android.widget.Button;
-import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothHandler;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
-import de.softwareelevators.robotersteuerung.steuerung.Joystick;
-import de.softwareelevators.robotersteuerung.steuerung.Main;
+import de.softwareelevators.robotersteuerung.networkHandler.BluetoothHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
+import de.softwareelevators.robotersteuerung.uiWidgets.Joystick;
+import de.softwareelevators.robotersteuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
 import de.softwareelevators.robotersteuerung.util.MathTools;
 import de.softwareelevators.robotersteuerung.util.NetworkAdapter;

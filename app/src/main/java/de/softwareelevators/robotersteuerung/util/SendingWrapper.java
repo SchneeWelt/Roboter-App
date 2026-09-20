@@ -1,7 +1,7 @@
 package de.softwareelevators.robotersteuerung.util;
 
 
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
 
 /**
  * Kapselt Methoden, die zum Senden der Daten an das verbundene

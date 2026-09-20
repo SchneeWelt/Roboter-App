@@ -1,12 +1,9 @@
-package de.softwareelevators.robotersteuerung.steuerung;
+package de.softwareelevators.robotersteuerung;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
-import de.softwareelevators.robotersteuerung.MainActivity;
-import de.softwareelevators.robotersteuerung.networkAdapter.BluetoothHandler;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
-import de.softwareelevators.robotersteuerung.uiAdapter.UIHandler;
+import de.softwareelevators.robotersteuerung.uiHandler.UIHandler;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
 
 import java.util.ArrayList;

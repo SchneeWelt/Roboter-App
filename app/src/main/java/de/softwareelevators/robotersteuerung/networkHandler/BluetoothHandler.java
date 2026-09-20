@@ -1,4 +1,4 @@
-package de.softwareelevators.robotersteuerung.networkAdapter;
+package de.softwareelevators.robotersteuerung.networkHandler;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import de.softwareelevators.robotersteuerung.MainActivity;
-import de.softwareelevators.robotersteuerung.steuerung.Main;
+import de.softwareelevators.robotersteuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
 
 import java.io.OutputStream;
