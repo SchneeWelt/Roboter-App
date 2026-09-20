@@ -80,14 +80,19 @@ public class UIAdapter implements Joystick.JoystickListener, NetworkConnectionSt
 		float lenkwinkel = lenkwinkelBerechnen(xPercent, yPercent);
 		float fahrgeschwindigkeit = fahrgeschwindigkeitBerechnen(xPercent, yPercent);
 
+		// Fahrgeschwindigkeit mal 100 rechnen. Wieso? Na weil der Roboter Daten im Wertebereich
+		// von -100 bis 100 erwartet und eben nicht im Bereich von -1 bis 1. Ich will aber ändern, dass
+		// das so ist!
+		fahrgeschwindigkeit *= 100;
+
 		updateSteeringDataDisplay(lenkwinkel, fahrgeschwindigkeit);
+
+		Ausgabe.print("Aktualisiere Steuerdaten: " + "Lenkwinkel: " + lenkwinkel + " | " + "Fahrgeschwindigkeit: " + fahrgeschwindigkeit);
 
 		if (networkAdapter.isConnected())
 		{
 			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);
 			sendebegrenzer.fahrgeschwindigkeitAktualisieren(fahrgeschwindigkeit);
-
-			Ausgabe.print("Aktualisier Daten: " + lenkwinkel + " | " + fahrgeschwindigkeit);
 		}
 	}
 
