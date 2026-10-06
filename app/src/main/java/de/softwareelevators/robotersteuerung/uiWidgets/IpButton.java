@@ -49,7 +49,7 @@ public class IpButton extends AppCompatButton
     private void onButtonClicked(View view)
     {
         // Pop Up öffnen, um die Ziel IP adresse abzufragen
-
+        openPopUp();
     }
 
     private void openPopUp()
@@ -57,7 +57,7 @@ public class IpButton extends AppCompatButton
         BottomSheetDialog dialog = new BottomSheetDialog(mainActivity);
 
         // Der Inhalt des PopUps
-        View dialogView = mainActivity.getLayoutInflater().inflate(R.layout.ipPopUp, null);
+        View dialogView = mainActivity.getLayoutInflater().inflate(R.layout.ippopup, null);
 
         EditText ipInput = dialogView.findViewById(R.id.input_ip);
         EditText portInput = dialogView.findViewById(R.id.input_port);

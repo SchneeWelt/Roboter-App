@@ -7,11 +7,8 @@ import de.softwareelevators.robotersteuerung.R;
 import de.softwareelevators.robotersteuerung.networkHandler.BluetoothHandler;
 import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
 import de.softwareelevators.robotersteuerung.networkHandler.WLanHandler;
-import de.softwareelevators.robotersteuerung.uiWidgets.Joystick;
+import de.softwareelevators.robotersteuerung.uiWidgets.*;
 import de.softwareelevators.robotersteuerung.Main;
-import de.softwareelevators.robotersteuerung.uiWidgets.ConnectButton;
-import de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay;
-import de.softwareelevators.robotersteuerung.uiWidgets.DataDisplay;
 
 /**
  * Ein Wrapper, der zunächst alle verwendeten UI Elemente über die jeweilige
@@ -22,6 +19,7 @@ public class UIElemente
 {
     private final Main main;
     private final Joystick joystick;
+    private final IpButton ipButton;
     private final UIHandler uiHandler;
     private final DataDisplay dataDisplay;
     private final ConnectButton connectButton;
@@ -36,6 +34,7 @@ public class UIElemente
         MainActivity mainActivity = main.getMainActivity();
 
         joystick = mainActivity.findViewById(R.id.joystick);
+        ipButton = mainActivity.findViewById(R.id.ip_button);
         connectButton = mainActivity.findViewById(R.id.connect_button);
         dataDisplay = mainActivity.findViewById(R.id.steuerdaten_display);
         connectionStateDisplay = mainActivity.findViewById(R.id.verbindungsstatus);
