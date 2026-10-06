@@ -33,13 +33,30 @@
 			app:layout_constraintVertical_bias="0.04"
 	/>
 
+
 	<de.softwareelevators.robotersteuerung.uiWidgets.IpButton
-			android:layout_width="" android:layout_height="">
 
+			android:id="@+id/ip_button"
 
+			android:text="IP Conf"
 
-	</de.softwareelevators.robotersteuerung.uiWidgets.IpButton>
+			android:visibility="invisible"
 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+
+			android:backgroundTint="@color/orange"
+			android:textColor="@color/black"
+
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+
+			app:layout_constraintHorizontal_bias="0.965"
+			app:layout_constraintVertical_bias="0.561"
+
+	/>
 	<de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay
 			android:text="Not Connected..."
 			android:layout_width="wrap_content"

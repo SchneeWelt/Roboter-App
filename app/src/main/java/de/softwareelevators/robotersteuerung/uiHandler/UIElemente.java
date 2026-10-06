@@ -77,4 +77,9 @@ public class UIElemente
     {
         return connectButton;
     }
+
+    public IpButton getIpButton()
+    {
+        return ipButton;
+    }
 }
