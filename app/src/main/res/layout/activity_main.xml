@@ -33,6 +33,12 @@
 			app:layout_constraintVertical_bias="0.04"
 	/>
 
+	<de.softwareelevators.robotersteuerung.uiWidgets.IpButton
+			android:layout_width="" android:layout_height="">
+
+
+
+	</de.softwareelevators.robotersteuerung.uiWidgets.IpButton>
 
 	<de.softwareelevators.robotersteuerung.uiWidgets.ConnectionStateDisplay
 			android:text="Not Connected..."
