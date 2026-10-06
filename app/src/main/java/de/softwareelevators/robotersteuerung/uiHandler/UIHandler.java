@@ -64,6 +64,9 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 		/* Sendebegrenzer zum Senden der Daten mit neuem Handler initialisieren */
 		sendebegrenzer = new Sendebegrenzer(networkHandler);
 
+		// Connect Button mit Networkhandler verknüpfen
+		uiElemente.getConnectButton().setOnClickListener((l) -> {Ausgabe.print("Connect Button pressed"); networkHandler.connect();});
+
 		// Diesem Objekt ermöglichen auf Dateneingang, Verbindungsauf und -abbau
 		// zu reagieren
 		networkHandler.setDataReceivedListener(this);
@@ -112,6 +115,8 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	{
 		// Lenkwinkel berechnen. Wertebereich: [0;180] (rechte Hälfte), [-0;-180] (linke Hälfte)
 		float lenkwinkel = MathTools.lenkwinkelBerechnen(xPercent, yPercent);
+
+		// Wertebereich: [0; 1]
 		float fahrgeschwindigkeit = MathTools.fahrgeschwindigkeitBerechnen(xPercent, yPercent);
 
 		// Und in der UI aktualisieren

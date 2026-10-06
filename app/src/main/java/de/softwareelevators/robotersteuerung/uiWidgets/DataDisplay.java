@@ -32,7 +32,10 @@ public class DataDisplay extends androidx.appcompat.widget.AppCompatTextView
 
     public void updateContent(float lenkwinkel, float fahrgeschwindigkeit)
     {
-        String info = String.format("Fahrgeschwindigkeit: %.2f%%\nLenkwinkel: %.2f°", fahrgeschwindigkeit * 100, lenkwinkel);
+        // Mal 100, dann kann ich nämlich nen % Zeichen dahinter setzen
+        float fahgeschwindigkeit_display = fahrgeschwindigkeit * 100;
+
+        String info = String.format("Fahrgeschwindigkeit: %.2f%%\nLenkwinkel: %.2f°", fahgeschwindigkeit_display, lenkwinkel);
         setText(info);
     }
 

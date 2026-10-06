@@ -16,7 +16,8 @@ import de.softwareelevators.robotersteuerung.uiWidgets.DataDisplay;
 /**
  * Ein Wrapper, der zunächst alle verwendeten UI Elemente über die jeweilige
  * ID der Elemente findet, sie als Referenz speichert und anschließend
- * für den {@link UIHandler} nutzbar macht
+ * für den {@link UIHandler} nutzbar macht. Implementierungen für die einzelnen
+ * Widgets sollen in dieser Klasse eigentlich nicht vorkommen!
  */
 public class UIElemente
 {

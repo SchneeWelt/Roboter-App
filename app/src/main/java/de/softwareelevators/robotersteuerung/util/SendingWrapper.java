@@ -25,7 +25,7 @@ public class SendingWrapper
 	public void steuerdatenSenden(float lenkwinkel, float fahrgeschwindigkeit)
 	{
 		/* Deadzone, um Zittern des Roboters zu verhinden */
-		float deadzone = 5f;	// Entfernung von Joystick Center mindestens 5%
+		float deadzone = 0.05f;	// Entfernung von Joystick Center mindestens 5%
 		if (fahrgeschwindigkeit < deadzone)
 			networkHandler.sendData(baueSteuerdaten(0, 0));
 		else
@@ -38,6 +38,12 @@ public class SendingWrapper
 		Ausgabe.print("Fahrgeschwindigkeit: " + fahrgeschwindigkeit);
 	}
 
+	/**
+	 * @param lenkwinkel
+	 * @param fahrgeschwindigkeit
+	 *
+	 * @return Eine an den Remote sendbare Repräsentation der Steuerdaten
+	 */
 	private String baueSteuerdaten(float lenkwinkel, float fahrgeschwindigkeit)
 	{
 		return lenkwinkel + "," + fahrgeschwindigkeit + "\n";

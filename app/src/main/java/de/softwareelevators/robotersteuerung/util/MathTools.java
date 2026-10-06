@@ -22,6 +22,15 @@ public class MathTools
         return lenkwinkel;
     }
 
+    /**
+     * Berechnet aus den beiden Parametern eine Fahrgeschwindigkeit, die an den remote
+     * gesendet werden kann
+     *
+     * @param xPercent
+     * @param yPercent
+     * @return Wertebereich [0; 1]. Berechnete Fahrgeschwindigkeit wie über Parameter
+     * vorgegeben.
+     */
     public static float fahrgeschwindigkeitBerechnen(float xPercent, float yPercent)
     {
         return (float) Math.sqrt(xPercent * xPercent + yPercent * yPercent);
