@@ -1,8 +1,8 @@
 package de.softwareelevators.robotersteuerung.util;
 
 
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
-import de.softwareelevators.robotersteuerung.uiAdapter.UIHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
+import de.softwareelevators.robotersteuerung.uiHandler.UIHandler;
 
 /**
  * Speichert global ab, ob eine Verbindung zu einem Remote

@@ -3,7 +3,7 @@ package de.softwareelevators.robotersteuerung.util;
 
 import android.os.Handler;
 import android.os.Looper;
-import de.softwareelevators.robotersteuerung.networkAdapter.NetworkHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
 
 /**
  * Diese Hilfklasse verwendet das Produce-Consumer Pattern,
