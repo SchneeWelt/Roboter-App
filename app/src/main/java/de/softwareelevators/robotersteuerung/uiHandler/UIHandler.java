@@ -2,8 +2,10 @@ package de.softwareelevators.robotersteuerung.uiHandler;
 
 
 import android.bluetooth.BluetoothDevice;
+import android.view.View;
 import de.softwareelevators.robotersteuerung.networkHandler.BluetoothHandler;
 import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.WLanHandler;
 import de.softwareelevators.robotersteuerung.uiWidgets.Joystick;
 import de.softwareelevators.robotersteuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
@@ -49,7 +51,7 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	 * UI gewechselt wurde. Das kommt dem Umstellen von Bluetooth auf W-Lan bzw von
 	 * W-Lan auf Bluetooth gleich
 	 *
-	 * @param networkHandler Der neue Adapter
+	 * @param networkHandler Der neue Handler
 	 */
 	public void onNetworkHandlerChanged(NetworkHandler networkHandler)
 	{
@@ -61,13 +63,31 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 		if (sendebegrenzer != null)
 			sendebegrenzer.stop();
 
+		updateIpButton(networkHandler);
+
 		/* Sendebegrenzer zum Senden der Daten mit neuem Handler initialisieren */
 		sendebegrenzer = new Sendebegrenzer(networkHandler);
+
+		// Connect Button mit Networkhandler verknüpfen
+		uiElemente.getConnectButton().setOnClickListener((l) -> {Ausgabe.print("Connect Button pressed"); networkHandler.connect();});
 
 		// Diesem Objekt ermöglichen auf Dateneingang, Verbindungsauf und -abbau
 		// zu reagieren
 		networkHandler.setDataReceivedListener(this);
 		networkHandler.setNetworkConnectionStateListener(this);
+	}
+
+	private void updateIpButton(NetworkHandler networkHandler)
+	{
+		// Sichtbarkeit IP Config Button ändern
+		if (networkHandler instanceof WLanHandler)
+		{
+			uiElemente.getIpButton().setVisibility(View.VISIBLE);
+
+			//
+		}
+		else
+			uiElemente.getIpButton().setVisibility(View.INVISIBLE);
 	}
 
 	@Override
@@ -112,6 +132,8 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	{
 		// Lenkwinkel berechnen. Wertebereich: [0;180] (rechte Hälfte), [-0;-180] (linke Hälfte)
 		float lenkwinkel = MathTools.lenkwinkelBerechnen(xPercent, yPercent);
+
+		// Wertebereich: [0; 1]
 		float fahrgeschwindigkeit = MathTools.fahrgeschwindigkeitBerechnen(xPercent, yPercent);
 
 		// Und in der UI aktualisieren

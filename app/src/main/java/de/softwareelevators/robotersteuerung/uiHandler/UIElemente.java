@@ -13,7 +13,8 @@ import de.softwareelevators.robotersteuerung.Main;
 /**
  * Ein Wrapper, der zunächst alle verwendeten UI Elemente über die jeweilige
  * ID der Elemente findet, sie als Referenz speichert und anschließend
- * für den {@link UIHandler} nutzbar macht
+ * für den {@link UIHandler} nutzbar macht. Implementierungen für die einzelnen
+ * Widgets sollen in dieser Klasse eigentlich nicht vorkommen!
  */
 public class UIElemente
 {
@@ -75,5 +76,10 @@ public class UIElemente
     public ConnectButton getConnectButton()
     {
         return connectButton;
+    }
+
+    public IpButton getIpButton()
+    {
+        return ipButton;
     }
 }

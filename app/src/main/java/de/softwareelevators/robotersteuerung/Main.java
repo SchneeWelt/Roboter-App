@@ -31,8 +31,9 @@ public class Main
 		wird, muss nie wieder diese Permission neu eingeholt werden. Heißt der nachfolgende Teil nervt einmal
 		und dann nie wieder */
 
+		Ausgabe.print("Hohle App Berechtigungen...");
 		if (hohleBerechtigungen())
-			Ausgabe.print("Alle Berechtigungen erteilt");
+			Ausgabe.print("Alle App Berechtigungen erteilt!");
 		else
 			Ausgabe.print("App Berechtitungen verweigert. Neustart empfohlen");
 	}

@@ -39,8 +39,6 @@ public class IpButton extends AppCompatButton
 
     private void setup(Context context)
     {
-        // In wie fern ist context zu main activity zugehörig?
-
         this.mainActivity = (MainActivity) context;
 
         setOnClickListener(this::onButtonClicked);
@@ -57,7 +55,7 @@ public class IpButton extends AppCompatButton
         BottomSheetDialog dialog = new BottomSheetDialog(mainActivity);
 
         // Der Inhalt des PopUps
-        View dialogView = mainActivity.getLayoutInflater().inflate(R.layout.ippopup, null);
+        View dialogView = mainActivity.getLayoutInflater().inflate(R.layout.ip_pop_up, null);
 
         EditText ipInput = dialogView.findViewById(R.id.input_ip);
         EditText portInput = dialogView.findViewById(R.id.input_port);
@@ -77,10 +75,10 @@ public class IpButton extends AppCompatButton
                     e.printStackTrace();
                 }
 
-                // TODO: Erhaltene Daten global irgendwo speichern.
-                // VIeleicht im W-Lan handler?
 
-                dialog.dismiss();   // Was macht diese Zeile?
+
+                // Dialog schließen sobald der OK Button gedrückt wird
+                dialog.dismiss();
             }
         );
 

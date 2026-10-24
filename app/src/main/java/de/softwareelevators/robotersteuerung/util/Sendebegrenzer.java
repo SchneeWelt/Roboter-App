@@ -75,16 +75,16 @@ public class Sendebegrenzer
 	private void sendTask()
 	{
 		/* Wertänderung seit letzem Send ermitteln */
-		boolean lenkwinkelÄnderung = lenkwinkel != vorheriegerLenkwinkel;
-		boolean fahrgeschwindigkeitsÄnderung = fahrgeschwindigkeit != vorheriegeFahrgeschwindigkeit;
+		boolean lenkwinkelAenderung = lenkwinkel != vorheriegerLenkwinkel;
+		boolean fahrgeschwindigkeitsAenderung = fahrgeschwindigkeit != vorheriegeFahrgeschwindigkeit;
 
 		/* Nur bei Wertänderung senden -> Spamvermeidung */
-		if (lenkwinkelÄnderung || fahrgeschwindigkeitsÄnderung)
+		if (lenkwinkelAenderung || fahrgeschwindigkeitsAenderung)
 		{
-			Ausgabe.print("Sende Daten an Ziel");
-
 			sendingWrapper.steuerdatenSenden(lenkwinkel, fahrgeschwindigkeit);
 
+			// Das ist für die Sendeoptimierung. Es wird nur gesendet, wenn
+			// eine Wertänderung auftritt
 			vorheriegerLenkwinkel = lenkwinkel;
 			vorheriegeFahrgeschwindigkeit = fahrgeschwindigkeit;
 		}
