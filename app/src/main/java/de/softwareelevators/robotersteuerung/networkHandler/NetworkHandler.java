@@ -53,7 +53,7 @@ public abstract class NetworkHandler
 	{
 		connectionState = ConnectionState.CONNECTED;
 
-		networkConnectionStateListener.onConnectionsEstablished(connectedDevice);
+		networkConnectionStateListener.onConnectionEstablished(connectedDevice);
 	}
 
 

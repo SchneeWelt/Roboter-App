@@ -106,7 +106,7 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	 * @param connectedDevice
 	 */
 	@Override
-	public void onConnectionsEstablished(BluetoothDevice connectedDevice)
+	public void onConnectionEstablished(BluetoothDevice connectedDevice)
 	{
 		// Ui Aktualisieren
 		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onConnectionEstablished());

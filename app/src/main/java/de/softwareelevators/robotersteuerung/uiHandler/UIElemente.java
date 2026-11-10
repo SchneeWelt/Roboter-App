@@ -16,6 +16,8 @@ import de.softwareelevators.robotersteuerung.Main;
  * für den {@link UIHandler} nutzbar macht. Implementierungen für die einzelnen
  * Widgets sollen in dieser Klasse eigentlich nicht vorkommen!
  */
+
+@Deprecated
 public class UIElemente
 {
     private final Main main;
@@ -52,7 +54,7 @@ public class UIElemente
 
         if (newState)  // W-Lan Modus aktivieren
         {
-            uiHandler.onNetworkHandlerChanged(new WLanHandler());
+            uiHandler.onNetworkHandlerChanged(new WLanHandler("wanze.local", main.getMainActivity()));
 
             Toast.makeText(main.getMainActivity(), "W-Lanmodus aktiviert", Toast.LENGTH_SHORT).show();
         } else // Bluetoothmodus aktivieren

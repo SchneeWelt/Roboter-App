@@ -1,6 +1,11 @@
 package de.softwareelevators.robotersteuerung.networkHandler;
 
 
+import android.widget.Toast;
+import de.softwareelevators.robotersteuerung.Main;
+import de.softwareelevators.robotersteuerung.MainActivity;
+import de.softwareelevators.robotersteuerung.util.Ausgabe;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -56,55 +61,63 @@ void loop() {
 public class WLanHandler extends NetworkHandler
 {
 	private Socket socket;
+	private String mDnsHost;
+	private MainActivity mainActivity;
 
-	public WLanHandler()
+	/**
+	 * @param mDnsHost Der mDNS Namen von dem Gerät mit dem sich dieser Handler
+	 *                 über {@link connect()} verbinden soll. Sollte etwas enhalten
+	 *                 wie: "esp32.local". Das .local als Endung ist wichtig, damit
+	 *                 der Router erkennt, dass ich hier einen Hostname über mDNS
+	 *                 auflösen will. Ohne .local könnte der Router auf die Idee
+	 *                 kommen nach dem Namen von einem Server über DNS zu suchen,
+	 *                 was dann ohne Ergebnis resultieren würde.
+	 */
+	public WLanHandler(String mDnsHost, MainActivity mainActivity)
 	{
-    }
+		this.mDnsHost = mDnsHost;
+		this.mainActivity = mainActivity;
+	}
 
+	/**
+	 * Verbindet sich über mDNS zu einem Remote Gerät
+	 */
 	@Override
 	public void connect()
 	{
 		super.connect();
 
-		/* Verbindung zum ESP32 herstellen - nur möglich, wenn Handy mit ESP32-WLan verbunden */
-		try
-		{
-			if (socket != null && !socket.isClosed())
-				disconnect();
+		if (socket != null && !socket.isClosed())
+			disconnect();
 
-//			ich sollte mich hier über mDNS verbinden. Dann muss ich die IP Adresse des EPS32 nicht kennen,
-//			die müsste ich andernfalls ja herausfinden. Auf dieser seite:
+		/* Android erlaubt Netzwerkoperationen nicht auf dem Main Thread. Deshalb
+		* separaten Thread verwenden */
+		new Thread(() -> {
+			try {
 
-		socket = new Socket("esp32robot.local", 1234);
+				Ausgabe.print("Verbinde...");
 
-//			andere seite:
-//
-//			#include <ESPmDNS.h>
-//
-//			MDNS.begin("esp32robot");
-//
-//			falls das nicht funzt: IP Adresse über serial monitor ausgeben lassen oder:
-//
-//			Der klassische udp broadcast. Der ist am aufwändigsten zu implementieren. Hier ausschnitte:
-//
-//			esp 32
-//			udp.beginPacket("255.255.255.255", 4210);
-//			udp.print(WiFi.localIP());
-//			udp.endPacket();
-//
-//			app
-//			DatagramPacket packet = new DatagramPacket(buf, buf.length);
-//			socket.receive(packet);
-//			String espIp = new String(packet.getData());
+				// Löst erst den Hostname per mDNS auf und verbindet sich dann direkt
+				// mit diesem auf dem angegebenen Port
+				socket = new Socket(mDnsHost, 8000);
+
+				Ausgabe.print("Verbindung zu Zielgerät erfolgreich hergestellt!");
+
+				onConnectionEstablished(null);
+
+				mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}).start();
 
 
 
-			// Da ich mDNS verwende benötige ich keine hardcoded IP Adressen mehr!
-//			socket = new Socket("192.168.4.1", 1234);
-		} catch (IOException e)
-		{
-			throw new RuntimeException(e);
-		}
+
+
+
+
 	}
 
 	@Override
@@ -113,10 +126,7 @@ public class WLanHandler extends NetworkHandler
 		if (socket == null || socket.isClosed())
 			throw new IllegalStateException("Socket ist nicht verbunden");
 
-		// Thread wird sowieso gar nicht benötigt, da dieser Befehl hier nicht durch einen
-		// UI Thread aufgerufen wird.
-
-		new Thread(() ->		// Das hier mit dem eigenen Thread geht so nicht. Es muss einen Handler geben, d
+		new Thread(() ->
 		{
 			try
 			{

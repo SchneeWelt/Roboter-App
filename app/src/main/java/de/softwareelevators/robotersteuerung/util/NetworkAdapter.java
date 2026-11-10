@@ -17,7 +17,7 @@ public class NetworkAdapter implements NetworkConnectionStateListener, DataRecei
     }
 
     @Override
-    public void onConnectionsEstablished(BluetoothDevice connectedDevice)
+    public void onConnectionEstablished(BluetoothDevice connectedDevice)
     {
 
     }
