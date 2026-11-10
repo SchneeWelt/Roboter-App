@@ -1,5 +1,10 @@
 # Todos
 
+-       Der IP Button macht gar keinen Sinn, da ich ja nicht IP Adressen direkt verwendet
+        sondern mDNS. Müsste ich mal anpassen.
+
+-       Ich sollte diese Datei löschen und die TODO Spalte als ## in die Readme packen
+
 -       Statt Bluetooth Device muss ich ein eigenes Device Klasse bauen. Dann funzt die 
         architektur auch über WLan. 
 
