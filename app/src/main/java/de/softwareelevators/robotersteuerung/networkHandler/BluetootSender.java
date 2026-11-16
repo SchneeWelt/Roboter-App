@@ -16,11 +16,12 @@ import java.util.UUID;
 
 
 /** Erlaubt das Herstellen von Verbindungen zu anderen Geräten
- * über klassisches Bluetooth (nicht BLE). Anschließend ist die
- * Datenübertragung zu diesem Gerät möglich. Jeweils eine Verbindung
- * pro Controller Instanz.
+ * über klassisches Bluetooth (nicht BLE). Ziel ist das Senden
+ * von Daten an diese anderen Geräte (Server). Pro Klassenintanz
+ * ist genau eine Verbindung zu einem anderen Gerät (Server)
+ * möglich
  */
-public class BluetoothHandler extends NetworkHandler
+public class BluetootSender extends NetworkSender
 {
 	private Main main;
 
@@ -54,17 +55,11 @@ public class BluetoothHandler extends NetworkHandler
 	private BluetoothSocket bluetoothSocket;
 
 
-	public BluetoothHandler(Main main)
+	public BluetootSender(Main main)
 	{
 		this.main = main;
 
 		deviceName = "ESP32";
-	}
-
-	@Override
-	public void onDataReceived(String data)
-	{
-
 	}
 
 	/**

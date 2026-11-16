@@ -5,18 +5,22 @@ import android.bluetooth.BluetoothDevice;
 
 /**
  * Ermöglicht dieser Anwendung die Kommunikation zu einem remote Gerät (einem Roboter).
- * Die Kommunikation ist entweder über Bluetooth: {@link BluetoothHandler}
- * oder über W-Lan: {@link WLanHandler} durch von dieser Klasse erbende Klassen möglich.
+ * Die Kommunikation ist entweder über Bluetooth: {@link BluetootSender}
+ * oder über W-Lan: {@link UdpSender} durch von dieser Klasse erbende Klassen möglich.
+ * <p>
+ *     Diese Klasse und dessen Kinder fungierem dabei als Sender von Daten - sendet diese
+ *     also immer an einen Server, der auf einen Verbindungsaufbau wartet und dann ankommende Daten
+ *     verarbeitet und Antworten zurückschickt.
+ * </p>
  */
-public abstract class NetworkHandler
+public abstract class NetworkSender
 {
 	/** Gibt an, ob diese Klasse mit einem Remote Gerät verbunden ist */
 	private ConnectionState connectionState;
-	private DataReceivedListener dataReceivedListener;
 	private NetworkConnectionStateListener networkConnectionStateListener;
 
 
-	public NetworkHandler()
+	public NetworkSender()
 	{
 		connectionState = ConnectionState.NOT_CONNECTED;
 	}
@@ -29,18 +33,6 @@ public abstract class NetworkHandler
 	 *             sollen
 	 */
 	public abstract void sendData(String data);
-
-	/**
-	 * Wird immer dann geworfen, wenn Daten von einem Remote Gerät (dem Roboter)
-	 * empfangen wurden. Dieses Event dient dann der Verarbeitung dieser
-	 * Daten.
-	 *
-	 * @param data Die vom Remote Gerät (dem Roboter) empfangenen Daten
-	 */
-	public void onDataReceived(String data)
-	{
-		dataReceivedListener.onDataReceived(data);
-	}
 
 	/**
 	 * Muss durch die von dieser Klasse erbende Klasse aufgerufen werden, sobald
@@ -93,17 +85,6 @@ public abstract class NetworkHandler
 	public void setNetworkConnectionStateListener(NetworkConnectionStateListener networkConnectionStateListener)
 	{
 		this.networkConnectionStateListener = networkConnectionStateListener;
-	}
-
-	/**
-	 * Sorgt dafür, dass dieses Objekt den hier übergebenen Parameter bei Zustandsänderungen, die
-	 * durch diesen Parameter übermittelt werden können, informiert.
-	 *
-	 * @param dataReceivedListener
-	 */
-	public void setDataReceivedListener(DataReceivedListener dataReceivedListener)
-	{
-		this.dataReceivedListener = dataReceivedListener;
 	}
 
 	public boolean isConnected()

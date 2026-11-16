@@ -4,9 +4,9 @@ package de.softwareelevators.robotersteuerung.uiHandler;
 import android.widget.*;
 import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.networkHandler.BluetoothHandler;
-import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
-import de.softwareelevators.robotersteuerung.networkHandler.WLanHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.BluetootSender;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkSender;
+import de.softwareelevators.robotersteuerung.networkHandler.UdpSender;
 import de.softwareelevators.robotersteuerung.uiWidgets.*;
 import de.softwareelevators.robotersteuerung.Main;
 
@@ -50,16 +50,16 @@ public class UIElemente
 
     private void onToggle(CompoundButton b, boolean newState)
     {
-        NetworkHandler newAdapter = null;
+        NetworkSender newAdapter = null;
 
         if (newState)  // W-Lan Modus aktivieren
         {
-            uiHandler.onNetworkHandlerChanged(new WLanHandler("wanze.local", main.getMainActivity()));
+            uiHandler.onNetworkHandlerChanged(new UdpSender("wanze.local", main.getMainActivity()));
 
             Toast.makeText(main.getMainActivity(), "W-Lanmodus aktiviert", Toast.LENGTH_SHORT).show();
         } else // Bluetoothmodus aktivieren
         {
-            uiHandler.onNetworkHandlerChanged(new BluetoothHandler(main));
+            uiHandler.onNetworkHandlerChanged(new BluetootSender(main));
 
             Toast.makeText(main.getMainActivity(), "Bluetoothmodus aktiviert", Toast.LENGTH_SHORT).show();
         }

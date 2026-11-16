@@ -3,7 +3,7 @@ package de.softwareelevators.robotersteuerung.uiWidgets;
 import android.content.Context;
 import android.util.AttributeSet;
 import de.softwareelevators.robotersteuerung.R;
-import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkSender;
 
 public class ConnectButton extends androidx.appcompat.widget.AppCompatButton
 {
@@ -26,24 +26,24 @@ public class ConnectButton extends androidx.appcompat.widget.AppCompatButton
      * Definiert was im Fall eines erfolgreichen Verbindugnsaufbaus mit diesem
      * Button passieren soll
      *
-     * @param networkHandler Der derzeit aktive {@link NetworkHandler}
+     * @param networkSender Der derzeit aktive {@link NetworkSender}
      */
-    public void onConnectionEstablished(NetworkHandler networkHandler)
+    public void onConnectionEstablished(NetworkSender networkSender)
     {
         // Dem Nutzer signalisieren, dass ein erneutes drücken des Buttons die Verbindung
         // wieder trennt
         setText(R.string.verbindung_trennen);
 
         // Den eigentlichen Verbindungsabbruch ermöglichen
-		setOnClickListener((view) -> networkHandler.disconnect());
+		setOnClickListener((view) -> networkSender.disconnect());
     }
 
     /**
-     * @param networkHandler Der derzeit aktive {@link NetworkHandler}
+     * @param networkSender Der derzeit aktive {@link NetworkSender}
      */
-    public void onDisconect(NetworkHandler networkHandler)
+    public void onDisconect(NetworkSender networkSender)
     {
         setText(R.string.verbinden);
-        setOnClickListener((view) -> networkHandler.connect());
+        setOnClickListener((view) -> networkSender.connect());
     }
 }

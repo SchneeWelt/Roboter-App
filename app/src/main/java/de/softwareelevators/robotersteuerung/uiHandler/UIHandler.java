@@ -3,9 +3,9 @@ package de.softwareelevators.robotersteuerung.uiHandler;
 
 import android.bluetooth.BluetoothDevice;
 import android.view.View;
-import de.softwareelevators.robotersteuerung.networkHandler.BluetoothHandler;
-import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
-import de.softwareelevators.robotersteuerung.networkHandler.WLanHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.BluetootSender;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkSender;
+import de.softwareelevators.robotersteuerung.networkHandler.UdpSender;
 import de.softwareelevators.robotersteuerung.uiWidgets.Joystick;
 import de.softwareelevators.robotersteuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
@@ -17,6 +17,7 @@ import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
  * Ein Adapter für alle UI Elemente der App. Die Elemente existieren hier als
  * Objekte und dessen Daten werden hier verarbeitet
  */
+@Deprecated
 public class UIHandler extends NetworkAdapter implements Joystick.JoystickListener
 {
 	private final Main main;
@@ -24,13 +25,13 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	private Sendebegrenzer sendebegrenzer;
 
 
-	/** Der derzeit aktive {@link NetworkHandler}. Kann durch die UI vom {@link UIHandler}
+	/** Der derzeit aktive {@link NetworkSender}. Kann durch die UI vom {@link UIHandler}
 	 * ausgetauscht werden. Dieses Objekt wird von Objekten dieser Klasse zum Senden und Empfangen
 	 * von Daten über ein Netzwerk verwendet */
-	private NetworkHandler networkHandler;
+	private NetworkSender networkSender;
 
 	/**
-	 * Die Klasse {@link NetworkHandler} muss vor Erzeugung eines
+	 * Die Klasse {@link NetworkSender} muss vor Erzeugung eines
 	 * Objektes dieser Klasse als Objekt in {@link Main} intialisiert
 	 * worden sein
 	 *
@@ -43,44 +44,43 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 		uiElemente = new UIElemente(main, this);
 
 		// Im Bluetooth Modus starten
-		onNetworkHandlerChanged(new BluetoothHandler(main));
+		onNetworkHandlerChanged(new BluetootSender(main));
 	}
 
 	/**
-	 * Wird immer dann geworfen, wenn der aktive {@link NetworkHandler} durch das
+	 * Wird immer dann geworfen, wenn der aktive {@link NetworkSender} durch das
 	 * UI gewechselt wurde. Das kommt dem Umstellen von Bluetooth auf W-Lan bzw von
 	 * W-Lan auf Bluetooth gleich
 	 *
-	 * @param networkHandler Der neue Handler
+	 * @param networkSender Der neue Handler
 	 */
-	public void onNetworkHandlerChanged(NetworkHandler networkHandler)
+	public void onNetworkHandlerChanged(NetworkSender networkSender)
 	{
 		// Den neuen NetworkHandler globale für die weitere Verwendung in dieser Klasse
 		// speichern
-		this.networkHandler = networkHandler;
+		this.networkSender = networkSender;
 
 		// Falls alter sendebegrenzer aktiv -> diesen Stoppen
 		if (sendebegrenzer != null)
 			sendebegrenzer.stop();
 
-		updateIpButton(networkHandler);
+		updateIpButton(networkSender);
 
 		/* Sendebegrenzer zum Senden der Daten mit neuem Handler initialisieren */
-		sendebegrenzer = new Sendebegrenzer(networkHandler);
+		sendebegrenzer = new Sendebegrenzer(networkSender);
 
 		// Connect Button mit Networkhandler verknüpfen
-		uiElemente.getConnectButton().setOnClickListener((l) -> {Ausgabe.print("Connect Button pressed"); networkHandler.connect();});
+		uiElemente.getConnectButton().setOnClickListener((l) -> {Ausgabe.print("Connect Button pressed"); networkSender.connect();});
 
 		// Diesem Objekt ermöglichen auf Dateneingang, Verbindungsauf und -abbau
 		// zu reagieren
-		networkHandler.setDataReceivedListener(this);
-		networkHandler.setNetworkConnectionStateListener(this);
+		networkSender.setNetworkConnectionStateListener(this);
 	}
 
-	private void updateIpButton(NetworkHandler networkHandler)
+	private void updateIpButton(NetworkSender networkSender)
 	{
 		// Sichtbarkeit IP Config Button ändern
-		if (networkHandler instanceof WLanHandler)
+		if (networkSender instanceof UdpSender)
 		{
 			uiElemente.getIpButton().setVisibility(View.VISIBLE);
 
@@ -110,7 +110,7 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	{
 		// Ui Aktualisieren
 		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onConnectionEstablished());
-		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onConnectionEstablished(networkHandler));
+		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onConnectionEstablished(networkSender));
 
 		// Sendebegrenzer für die nun kommende Datenübertragung starten
 		sendebegrenzer.start();
@@ -120,7 +120,7 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	public void onDisconnect()
 	{
 		// Ui aktualisieren
-		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onDisconect(networkHandler));
+		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onDisconect(networkSender));
 		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onDisconnect());
 
 		// Sendebegrenzer stoppen, da jetzt ja kein Ziel mehr existiert, mit dem kommuniziert werden müsste
@@ -140,7 +140,7 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 		uiElemente.getSteeringDataDisplay().updateContent(lenkwinkel, fahrgeschwindigkeit);
 
 		// Wenn remote Geräte verfügbar
-		if (networkHandler.isConnected())
+		if (networkSender.isConnected())
 		{
 			// Aktualisierte Daten an remote Gerät schicken
 			sendebegrenzer.lenkwinkelAktualisieren(lenkwinkel);

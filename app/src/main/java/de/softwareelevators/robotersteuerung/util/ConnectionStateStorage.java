@@ -1,17 +1,17 @@
 package de.softwareelevators.robotersteuerung.util;
 
 
-import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkSender;
 import de.softwareelevators.robotersteuerung.uiHandler.UIHandler;
 
 /**
  * Speichert global ab, ob eine Verbindung zu einem Remote
  * gerät (bspw einem Roboter) besteht. Diese Klasse ist zentral
- * und wird sowohl von {@link NetworkHandler}
+ * und wird sowohl von {@link NetworkSender}
  * Instanzen verwendet, als auch von der {@link UIHandler}
  * Klasse.
  *
- * wird jetzt in {@link NetworkHandler} direkt
+ * wird jetzt in {@link NetworkSender} direkt
  * gemacht. Muss also nicht mehr über eine externe klasse gespeichert werden
  */
 @Deprecated

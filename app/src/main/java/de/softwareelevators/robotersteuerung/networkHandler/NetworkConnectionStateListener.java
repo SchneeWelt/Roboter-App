@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice;
 
 /** Ermöglicht eine Reaktion externer Klassen auf das aufbauen und schließen
  * einer Verbindung zu einem Remote Gerät (dem Roboter). Das Wort extern bedeutet
- * Klassen, die nicht vom Type: {@link NetworkHandler} sind
+ * Klassen, die nicht vom Type: {@link NetworkSender} sind
  */
 public interface NetworkConnectionStateListener
 {

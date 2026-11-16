@@ -3,7 +3,7 @@ package de.softwareelevators.robotersteuerung.util;
 
 import android.os.Handler;
 import android.os.Looper;
-import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
+import de.softwareelevators.robotersteuerung.networkHandler.NetworkSender;
 
 /**
  * Diese Hilfklasse verwendet das Produce-Consumer Pattern,
@@ -16,7 +16,7 @@ import de.softwareelevators.robotersteuerung.networkHandler.NetworkHandler;
  * noch nicht gesendet werden können. Mache ich hier nicht.
  * Mann würde aber wohl eine Queu verwenden.
  * <p>
- * Verwendet einen {@link NetworkHandler}, um Daten an das jeweils
+ * Verwendet einen {@link NetworkSender}, um Daten an das jeweils
  * verbundene Gerät (den Roboter) zu senden.
  */
 public class Sendebegrenzer
@@ -31,13 +31,13 @@ public class Sendebegrenzer
 	private Handler handler;
 	private SendingWrapper sendingWrapper;
 
-	public Sendebegrenzer(NetworkHandler networkHandler)
+	public Sendebegrenzer(NetworkSender networkSender)
 	{
 		vorheriegerLenkwinkel = Integer.MIN_VALUE;
 		vorheriegeFahrgeschwindigkeit = Integer.MIN_VALUE;
 
 		handler = new Handler(Looper.getMainLooper());
-		sendingWrapper = new SendingWrapper(networkHandler);
+		sendingWrapper = new SendingWrapper(networkSender);
 	}
 
 	/**
