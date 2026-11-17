@@ -1,6 +1,6 @@
 package de.softwareelevators.robotersteuerung.networkHandler;
 
-import android.bluetooth.BluetoothDevice;
+import de.softwareelevators.robotersteuerung.MainActivity;
 
 
 /**
@@ -15,13 +15,17 @@ import android.bluetooth.BluetoothDevice;
  */
 public abstract class NetworkSender
 {
+	/** Ein Backlink auf den Programmstart und damit auf einen wichtigen Datenspeicher */
+	private MainActivity mainActivity;
+
 	/** Gibt an, ob diese Klasse mit einem Remote Gerät verbunden ist */
 	private ConnectionState connectionState;
 	private NetworkConnectionStateListener networkConnectionStateListener;
 
-
-	public NetworkSender()
+	public NetworkSender(MainActivity mainActivity)
 	{
+		this.mainActivity = mainActivity;
+
 		connectionState = ConnectionState.NOT_CONNECTED;
 	}
 
@@ -35,33 +39,28 @@ public abstract class NetworkSender
 	public abstract void sendData(String data);
 
 	/**
+	 * Ein Event, welches intern andere Komponenten über den erfolgreichen
+	 * Verbindungsaufbau zu einem Server informiert
+	 * <p>
 	 * Muss durch die von dieser Klasse erbende Klasse aufgerufen werden, sobald
-	 * eine Verbindung zu einem Remote Gerät hergestellt werden konnte
-	 *
-	 * @param connectedDevice Das Remote Gerät, zu dem eine Verbindung hergestellt
-	 *                        wurde
+	 * eine Verbindung zu einem Server hergestellt wurde.
 	 */
-	public void onConnectionEstablished(BluetoothDevice connectedDevice)
+	public void onConnectionEstablished()
 	{
 		connectionState = ConnectionState.CONNECTED;
 
-		networkConnectionStateListener.onConnectionEstablished(connectedDevice);
+		networkConnectionStateListener.onConnectionEstablished();
 	}
 
-
 	/**
-	 * Veranlasst dieses Objekt dazu eine Verbindung zu einem Remote
-	 * Gerät (dem Roboter) auzubauen. Achtung: Nach diesem Befehl ist
+	 * Veranlasst dieses Objekt dazu eine Verbindung zu einem Server
+	 * (dem Roboter) aufzubauen. Achtung: Nach diesem Befehl ist
 	 * nicht unbedingt auch eine Verbindung aufgebaut. Es wird eben nur
 	 * der Verbindungsaufbau versucht. Er kann aber nicht garantiert
 	 * werden. Sollte eine Verbindung aufgebaut worden sein können,
-	 * so wird {@link #onConnectionEstablished(BluetoothDevice)}
-	 * geworfen.
+	 * so wird {@link #onConnectionEstablished()} geworfen.
 	 */
-	public void connect()
-	{
-
-	}
+	public abstract void connect();
 
 
 	/**
@@ -90,5 +89,10 @@ public abstract class NetworkSender
 	public boolean isConnected()
 	{
 		return connectionState.equals(ConnectionState.CONNECTED);
+	}
+
+	protected MainActivity getMainActivity()
+	{
+		return mainActivity;
 	}
 }

@@ -1,13 +1,7 @@
 package de.softwareelevators.robotersteuerung;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
 import de.softwareelevators.robotersteuerung.uiHandler.UIHandler;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -24,7 +18,7 @@ public class Main
 	{
 		this.mainActivity = mainActivity;
 
-		new UIHandler(this);
+		new UIHandler(mainActivity);
 
 		/* Nach allen möglichen Runtime permissions fragen. Der Trick: Wird eine Permmission einmal
 		erlaubt, so merkt sich das die App und solange diese dann nicht neu gestartet order zurückgesetzt
@@ -32,91 +26,13 @@ public class Main
 		und dann nie wieder */
 
 		Ausgabe.print("Hohle App Berechtigungen...");
-		if (hohleBerechtigungen())
+		if (getMainActivity().hohleBtBerechtigungen())
 			Ausgabe.print("Alle App Berechtigungen erteilt!");
 		else
 			Ausgabe.print("App Berechtitungen verweigert. Neustart empfohlen");
 	}
 
-	/**
-	 * @return true, wenn keine Permission fehlte und der Programmablauf also nicht
-	 * neu gestartet werden musss
-	 */
-	public boolean hohleBerechtigungen()
-	{
-		String[] permissions =
-		{
-				Manifest.permission.BLUETOOTH_CONNECT,
-				Manifest.permission.BLUETOOTH_SCAN,
-				Manifest.permission.BLUETOOTH_ADVERTISE,
-//				Manifest.permission.NEARBY_WIFI_DEVICES
-		};
 
-		List<String> missing = new ArrayList<>();
-
-		for (String p : permissions)
-			if (ActivityCompat.checkSelfPermission(mainActivity, p)
-					!= PackageManager.PERMISSION_GRANTED) {
-				missing.add(p);
-			}
-
-		if (!missing.isEmpty())
-		{
-			ActivityCompat.requestPermissions(
-					mainActivity,
-					missing.toArray(new String[0]),
-					1001
-			);
-
-			return false; // Permission fehlt → warten
-		}
-
-		return true; // Alle Permissions vorhanden
-	}
-
-	/**
-	 * Nach der Berechtigungsanfrage vergeht noch etwas zeit, bis die berechtigung erteilt wurde. Man kann
-	 * da dann mit callbacks drauf reagieren, sollte aber in jedemfall erstmal mit return aus dem aktuellen
-	 * Programmablauf rausspringen
-	 *
-	 * @return true, wenn die berechtigung geholt werden musste und der weitere Programmablauf daher
-	 * gestoppt werden sollte
-	 */
-	public boolean hohleBtConnectBerechtigung()
-	{
-		// Auch das Intent braucht eine Erlaubnis geöffnet zu werden...
-		if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.BLUETOOTH_CONNECT)	!= PackageManager.PERMISSION_GRANTED)
-		{
-			ActivityCompat.requestPermissions(
-					mainActivity,
-					new String[]{Manifest.permission.BLUETOOTH_CONNECT},
-					1001
-			);
-
-			return true; // WICHTIG: Intent erst starten, wenn Permission da ist. Deshalb hier "warten" -> zweiter Methodenaufruf erforderlich
-			// möglich durch erneutes anklicken des connect buttons?
-		}
-
-		return false;
-	}
-
-	public boolean hohleBtScanBerechtigung()
-	{
-		// Auch das Intent braucht eine Erlaubnis geöffnet zu werden...
-		if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)
-		{
-			ActivityCompat.requestPermissions(
-					mainActivity,
-					new String[]{Manifest.permission.BLUETOOTH_SCAN},
-					1001
-			);
-
-			return true; // WICHTIG: Intent erst starten, wenn Permission da ist. Deshalb hier "warten" -> zweiter Methodenaufruf erforderlich
-			// möglich durch erneutes anklicken des connect buttons?
-		}
-
-		return false;
-	}
 
 	public MainActivity getMainActivity()
 	{

@@ -9,6 +9,7 @@ import de.softwareelevators.robotersteuerung.networkHandler.NetworkSender;
 import de.softwareelevators.robotersteuerung.networkHandler.UdpSender;
 import de.softwareelevators.robotersteuerung.uiWidgets.*;
 import de.softwareelevators.robotersteuerung.Main;
+import de.softwareelevators.robotersteuerung.util.BluetoothSettings;
 
 /**
  * Ein Wrapper, der zunächst alle verwendeten UI Elemente über die jeweilige
@@ -20,7 +21,6 @@ import de.softwareelevators.robotersteuerung.Main;
 @Deprecated
 public class UIElemente
 {
-    private final Main main;
     private final Joystick joystick;
     private final IpButton ipButton;
     private final UIHandler uiHandler;
@@ -29,12 +29,11 @@ public class UIElemente
     private final ConnectionStateDisplay connectionStateDisplay;
 
 
-    public UIElemente(Main main, UIHandler uiHandler)
+    public UIElemente(UIHandler uiHandler)
     {
-        this.main = main;
         this.uiHandler = uiHandler;
 
-        MainActivity mainActivity = main.getMainActivity();
+        MainActivity mainActivity = uiHandler.getMainActivity();
 
         joystick = mainActivity.findViewById(R.id.joystick);
         ipButton = mainActivity.findViewById(R.id.ip_button);
@@ -54,14 +53,14 @@ public class UIElemente
 
         if (newState)  // W-Lan Modus aktivieren
         {
-            uiHandler.onNetworkHandlerChanged(new UdpSender("wanze.local", main.getMainActivity()));
+            uiHandler.onNetworkHandlerChanged(new UdpSender("wanze.local", uiHandler.getMainActivity()));
 
-            Toast.makeText(main.getMainActivity(), "W-Lanmodus aktiviert", Toast.LENGTH_SHORT).show();
+            Toast.makeText(uiHandler.getMainActivity(), "W-Lanmodus aktiviert", Toast.LENGTH_SHORT).show();
         } else // Bluetoothmodus aktivieren
         {
-            uiHandler.onNetworkHandlerChanged(new BluetootSender(main));
+            uiHandler.onNetworkHandlerChanged(new BluetootSender(BluetoothSettings.TARGET_DEVICE, uiHandler.getMainActivity()));
 
-            Toast.makeText(main.getMainActivity(), "Bluetoothmodus aktiviert", Toast.LENGTH_SHORT).show();
+            Toast.makeText(uiHandler.getMainActivity(), "Bluetoothmodus aktiviert", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -3,15 +3,13 @@ package de.softwareelevators.robotersteuerung.uiHandler;
 
 import android.bluetooth.BluetoothDevice;
 import android.view.View;
+import de.softwareelevators.robotersteuerung.MainActivity;
 import de.softwareelevators.robotersteuerung.networkHandler.BluetootSender;
 import de.softwareelevators.robotersteuerung.networkHandler.NetworkSender;
 import de.softwareelevators.robotersteuerung.networkHandler.UdpSender;
 import de.softwareelevators.robotersteuerung.uiWidgets.Joystick;
 import de.softwareelevators.robotersteuerung.Main;
-import de.softwareelevators.robotersteuerung.util.Ausgabe;
-import de.softwareelevators.robotersteuerung.util.MathTools;
-import de.softwareelevators.robotersteuerung.util.NetworkAdapter;
-import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
+import de.softwareelevators.robotersteuerung.util.*;
 
 /**
  * Ein Adapter für alle UI Elemente der App. Die Elemente existieren hier als
@@ -20,7 +18,7 @@ import de.softwareelevators.robotersteuerung.util.Sendebegrenzer;
 @Deprecated
 public class UIHandler extends NetworkAdapter implements Joystick.JoystickListener
 {
-	private final Main main;
+	private MainActivity mainActivity;
 	private final UIElemente uiElemente;
 	private Sendebegrenzer sendebegrenzer;
 
@@ -35,16 +33,16 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	 * Objektes dieser Klasse als Objekt in {@link Main} intialisiert
 	 * worden sein
 	 *
-	 * @param main
+	 * @param mainActivity
 	 */
-	public UIHandler(Main main)
+	public UIHandler(MainActivity mainActivity)
 	{
-		this.main = main;
+		this.mainActivity = mainActivity;
 
-		uiElemente = new UIElemente(main, this);
+		uiElemente = new UIElemente(this);
 
 		// Im Bluetooth Modus starten
-		onNetworkHandlerChanged(new BluetootSender(main));
+		onNetworkHandlerChanged(new BluetootSender(BluetoothSettings.TARGET_DEVICE, mainActivity));
 	}
 
 	/**
@@ -102,15 +100,13 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	/**
 	 * Wird geworfen, wenn sich ein remote Gerät mit diesem Gerät,
 	 * dieser App verbunden hat
-	 *
-	 * @param connectedDevice
 	 */
 	@Override
-	public void onConnectionEstablished(BluetoothDevice connectedDevice)
+	public void onConnectionEstablished()
 	{
 		// Ui Aktualisieren
-		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onConnectionEstablished());
-		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onConnectionEstablished(networkSender));
+		getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onConnectionEstablished());
+		getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onConnectionEstablished(networkSender));
 
 		// Sendebegrenzer für die nun kommende Datenübertragung starten
 		sendebegrenzer.start();
@@ -120,8 +116,8 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 	public void onDisconnect()
 	{
 		// Ui aktualisieren
-		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onDisconect(networkSender));
-		main.getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onDisconnect());
+		getMainActivity().runOnUiThread(() -> uiElemente.getConnectButton().onDisconect(networkSender));
+		getMainActivity().runOnUiThread(() -> uiElemente.getConnectionStateDisplay().onDisconnect());
 
 		// Sendebegrenzer stoppen, da jetzt ja kein Ziel mehr existiert, mit dem kommuniziert werden müsste
 		sendebegrenzer.stop();
@@ -148,5 +144,10 @@ public class UIHandler extends NetworkAdapter implements Joystick.JoystickListen
 
 			Ausgabe.print("Aktualisier Daten: " + lenkwinkel + " | " + fahrgeschwindigkeit);
 		}
+	}
+
+	public MainActivity getMainActivity()
+	{
+		return mainActivity;
 	}
 }

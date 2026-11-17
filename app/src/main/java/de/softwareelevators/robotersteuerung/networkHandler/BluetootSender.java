@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import de.softwareelevators.robotersteuerung.MainActivity;
-import de.softwareelevators.robotersteuerung.Main;
 import de.softwareelevators.robotersteuerung.util.Ausgabe;
 
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /** Erlaubt das Herstellen von Verbindungen zu anderen Geräten
@@ -23,14 +25,15 @@ import java.util.UUID;
  */
 public class BluetootSender extends NetworkSender
 {
-	private Main main;
+	private ExecutorService threadExecutor;
 
 	/**
 	* Der name von dem BT Classic Gerät, mit dem sich dises
 	* Gerät verbinden soll. Das Zielgerät muss für einen
 	* erfolgreichen Verbindungsaufbau mit diesem Gerät gekoppelt
-	* sein. */
-	private String deviceName;
+	* sein und das andere Gerät muss einen laufenden Bluetooth
+	* Server vorweisen können */
+	private String targetDevice;
 
 	/** Eine Schnittstelle zur BT Steuerung von diesem Gerät.
 	* Über diese Schnittstelle kann unteranderem ausgelesen
@@ -48,18 +51,18 @@ public class BluetootSender extends NetworkSender
 	private BluetoothDevice connectedDevice;
 
 	/** Der BT Socket, über den BT-Daten von diesem Gerät an
-	den BT Socket des verbundenen BT Gerätes gesendet werden können.
-	Er darf pro BT Gerät nur einmal für das jeweilige BT Gerät
-	existieren. Ein Empfangen von Daten, die von dem anderen
-	Gerät an dieses Gerät gesendet wurden, ist ebenfalls möglich. */
+	den BT Socket (BT Server) des verbundenen BT Gerätes gesendet
+	werden. Sollte der Server antworten, so kommt über dieses
+	Objekt auf die Antwort des Servers an*/
 	private BluetoothSocket bluetoothSocket;
 
-
-	public BluetootSender(Main main)
+	public BluetootSender(String targetDevice, MainActivity mainActivity)
 	{
-		this.main = main;
+		super(mainActivity);
 
-		deviceName = "ESP32";
+		this.targetDevice = targetDevice;
+
+		threadExecutor = Executors.newSingleThreadExecutor();
 	}
 
 	/**
@@ -72,13 +75,9 @@ public class BluetootSender extends NetworkSender
 	 */
 	public void connect()
 	{
-		super.connect();
+		Ausgabe.print("Starte Verbindungsaufbau zu Zielgerät mit Namen: " + targetDevice);
 
-		MainActivity mainActivity = main.getMainActivity();
-
-		Ausgabe.print("Starte Verbindungsaufbau zu Zielgerät mit Namen: " + deviceName);
-
-		BluetoothManager bluetoothManager = mainActivity.getSystemService(BluetoothManager.class);
+		BluetoothManager bluetoothManager = getMainActivity().getSystemService(BluetoothManager.class);
 		bluetoothAdapter = bluetoothManager.getAdapter();
 
 		if (bluetoothAdapter == null)
@@ -86,7 +85,7 @@ public class BluetootSender extends NetworkSender
 			/* Gerät unterstützt kein Bluetooth -> Fehlermeldung ausgeben */
 			Ausgabe.print("Fehler: Dieses Gerät unterstützt kein Bluetooth");
 
-			Toast.makeText(mainActivity, "Achtung: Dieses Gerät unterstützt kein Bleutooth...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getMainActivity(), "Achtung: Dieses Gerät unterstützt kein Bleutooth...", Toast.LENGTH_SHORT).show();
 
 			return;
 		}
@@ -95,14 +94,14 @@ public class BluetootSender extends NetworkSender
 		if (!bluetoothAdapter.isEnabled())
 		{
 			// Auch das Intent braucht eine Erlaubnis geöffnet zu werden...
-			if (main.hohleBtConnectBerechtigung())
+			if (getMainActivity().hohleBtConnectBerechtigung())
 				return;
 
 			/* Eine andere Anwendung starten - hier die Bluetooth Anwendung des Handys,
 			um den Nutzer aufzufordern Bluetooth einzuschalten. Das Ergebnis seiner Aktion
 			wird in einem Callback über den Result Code ausgegeben. */
 			Intent enableBtRequest = new Intent(android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			mainActivity.activityLauncher.launch(enableBtRequest, this::handleEnableBtResult);
+			getMainActivity().activityLauncher.launch(enableBtRequest, this::handleEnableBtResult);
 			// this::handleEnableBtResult übergibt Referenz von handleEnableBtResult() an launch Methode
 			// => Direkte Lambda spezifikation wird vermieden, was den Code lesbarer macht.
 		} else
@@ -118,8 +117,6 @@ public class BluetootSender extends NetworkSender
 	 */
 	private void handleEnableBtResult(ActivityResult result)
 	{
-		MainActivity mainActivity = main.getMainActivity();
-
 		int resultCode = result.getResultCode();
 
 		if (resultCode == Activity.RESULT_OK)
@@ -129,9 +126,9 @@ public class BluetootSender extends NetworkSender
 			zielgeraetFinden();
 		}
 		else if (resultCode == Activity.RESULT_CANCELED)
-			Toast.makeText(mainActivity, "Bitte für Stuerung Bluetooth aktivieren...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getMainActivity(), "Bitte für Stuerung Bluetooth aktivieren...", Toast.LENGTH_SHORT).show();
 		else
-			Toast.makeText(mainActivity, "FEHLER: Unbekannte Antwort...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getMainActivity(), "FEHLER: Unbekannte Antwort...", Toast.LENGTH_SHORT).show();
 
 		// Toast.LENGTH_SHORT: Anzeigedauer etwa 2 Sekunden, Long etwa 3.5 Sekunden. Das ist alles
 	}
@@ -144,15 +141,13 @@ public class BluetootSender extends NetworkSender
 	@SuppressLint("MissingPermission")	// Stimmt nicht, frage ich vorab über eine Methode ab. Intellij erkents aber nicht
     private void zielgeraetFinden()
 	{
-		MainActivity mainActivity = main.getMainActivity();
-
 
 		/* Über alle gekoppelten Geräte iterieren. Wenn dort der im
 		Feld deviceName gespeicherte Name vorkommt: Lese die MAC Adresse
 		von diesem Gerät aus und verbinde mit diesem Gerät */
 
 		/* Android schreibt an dieser Stelle das Überprüfen der Bluetooth Berechtigungen vor */
-		if (main.hohleBtConnectBerechtigung() || main.hohleBtScanBerechtigung())
+		if (getMainActivity().hohleBtConnectBerechtigung() || getMainActivity().hohleBtScanBerechtigung())
 			return;
 
 		/* Alle gekoppelten BT Geräte vom Betriebssystem holen */
@@ -162,7 +157,7 @@ public class BluetootSender extends NetworkSender
 			Ausgabe.print("Es sind keine Geräte gekoppelt, verbindungsaufbau fehlgeschlagen. " +
 					"Koppel bitte zunächst ein BT-Gerät mit diesem Gerät");
 
-			Toast.makeText(mainActivity, "Keine gekoppelten Geräte gefunden! Bitte erst welche Koppeln. Abbruch..", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getMainActivity(), "Keine gekoppelten Geräte gefunden! Bitte erst welche Koppeln. Abbruch..", Toast.LENGTH_SHORT).show();
 
 			return;
 		}
@@ -176,7 +171,7 @@ public class BluetootSender extends NetworkSender
 			/* Statusbericht über Verbindungsversuche ausgeben */
 			Ausgabe.print(" - Gekoppeltes Gerät: " + device.getName() + " (" + device.getAddress() + ")");
 
-			if (device.getName() != null && device.getName().equals(deviceName))
+			if (device.getName() != null && device.getName().equals(this.targetDevice))
 			{
 				Ausgabe.print("Zielgerät gefunden: " + device.getName() + " (" + device.getAddress() + ")");
 				targetDevice = device;
@@ -186,8 +181,8 @@ public class BluetootSender extends NetworkSender
 
 		if (targetDevice == null)
 		{
-			Ausgabe.print("Das gesuchte Gerät: " + deviceName + " konnte nicht gefunden werden");
-			Toast.makeText(mainActivity, "Das gesuchte Gerät: " + deviceName + " konnte nicht gefunden werden", Toast.LENGTH_SHORT).show();
+			Ausgabe.print("Das gesuchte Gerät: " + this.targetDevice + " konnte nicht gefunden werden");
+			Toast.makeText(getMainActivity(), "Das gesuchte Gerät: " + this.targetDevice + " konnte nicht gefunden werden", Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -203,11 +198,10 @@ public class BluetootSender extends NetworkSender
 	@SuppressLint("MissingPermission")
     private void connectToTargetDevice(BluetoothDevice targetDevice)
 	{
-		MainActivity mainActivity = main.getMainActivity();
-
-		/* Diese UUID gibt dem Zielgerät zu verstehen, dass es über das Serial Port
-		Profile - also über die Serielle Schnittstelle - mit diesem Gerät kommunizieren
-		soll. */
+		/* Diese UUID gibt dem Zielgerät zu verstehen, dass diese Anwendung über das
+		Serial Port Profile - also über die Serielle Schnittstelle - kommunizieren will.
+		Tatsächlich gibt es bei einem Bluetooth Server unterschiedliche Dienste, die
+		für eine Kommunikation über BT verwendet werden können */
 		final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 		/* Achtung: socket.connect() blockiert den jeweils Zuständigen Thread für mehrere Sekunden.
@@ -216,10 +210,10 @@ public class BluetootSender extends NetworkSender
 
 		/* Android schreibt an dieser Stelle das Überprüfen der Bluetooth Berechtigungen vor. Achtung:
 		* Überprüfungen müssen im Main Thread durchgeführt werden. */
-		if (main.hohleBtScanBerechtigung() || main.hohleBtConnectBerechtigung())
+		if (getMainActivity().hohleBtScanBerechtigung() || getMainActivity().hohleBtConnectBerechtigung())
 			return;
 
-		new Thread(() ->
+		threadExecutor.submit(() ->
 			{
 				try
 				{
@@ -239,16 +233,16 @@ public class BluetootSender extends NetworkSender
 
 					connectedDevice = targetDevice;
 
-					onConnectionEstablished(connectedDevice);
+					onConnectionEstablished();
 
-					mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
+					getMainActivity().runOnUiThread(() -> Toast.makeText(getMainActivity(), "Verbindung hergestellt", Toast.LENGTH_SHORT).show());
 				} catch (Exception e)
 				{
 					Ausgabe.print("Verbindungsaufbau fehlgeschlagen: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
-		).start();
+		);
 	}
 
 	public void disconnect()
@@ -262,9 +256,7 @@ public class BluetootSender extends NetworkSender
 		{
 			bluetoothSocket.close();
 
-			MainActivity mainActivity = main.getMainActivity();
-
-			mainActivity.runOnUiThread(() -> Toast.makeText(mainActivity, "Verbindung getrennt", Toast.LENGTH_SHORT).show());
+			getMainActivity().runOnUiThread(() -> Toast.makeText(getMainActivity(), "Verbindung zu: " + targetDevice + " getrennt", Toast.LENGTH_SHORT).show());
 		} catch (Exception e)
 		{
 			e.printStackTrace();

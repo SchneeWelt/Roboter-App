@@ -10,10 +10,8 @@ public interface NetworkConnectionStateListener
 {
     /** Wird geworfen, wenn eine Verbindung zu einem Remot Gerät (dem
      * Roboter) hergestellt wurde
-     *
-     * @param connectedDevice
      */
-    void onConnectionEstablished(BluetoothDevice connectedDevice);
+    void onConnectionEstablished();
 
 
     /** Wird geworfen, wenn eine bestehende Verbindung zu einem Gerät
